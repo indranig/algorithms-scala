@@ -90,9 +90,11 @@ object Dependencies {
   lazy val test     = "test"
   lazy val runtime  = "runtime"
 
-  lazy val junit      = "junit"         %  "junit"       % "4.10"  % test
-  lazy val scalaTest  = "org.scalatest" %% "scalatest"   % "1.9.1" % test
-  lazy val scalazFull = "org.scalaz"    %% "scalaz-full" % "6.0.4"
+  lazy val junit      = "junit"          %  "junit"        %  "4.10"   % test
+  lazy val mockito    = "org.mockito"    %  "mockito-core" %  "1.9.5"  % test
+  lazy val scalaTest  = "org.scalatest"  %% "scalatest"    %  "1.9.1"  % test
+  lazy val scalaCheck = "org.scalacheck" %% "scalacheck"   %  "1.10.1" % test
+  lazy val testDependencies = Seq(junit, scalaTest, scalaCheck, mockito)
 
   lazy val twitterOrg            = "com.twitter"
   lazy val twitterApp            = twitterOrg    %% "util-app"               % twitterUtilVersion
@@ -110,15 +112,19 @@ object Dependencies {
   lazy val twitterZkCommon       = twitterOrg    %% "util-zk-common"         % twitterUtilVersion
   lazy val twitterZk             = twitterOrg    %% "util-zk"                % twitterUtilVersion
 
-  lazy val twitterUtilDependencies = Seq(twitterCollection, twitterBenchmark)
+  lazy val twitterUtilDependencies = Seq(twitterCore, twitterBenchmark, twitterEval)
+  
+  lazy val commonsIO             = "commons-io"  % "commons-io"              % "2.4"
+  lazy val apacheCommonsDependencies = Seq(commonsIO)
 
-  lazy val slf4j      = "org.slf4j" % "slf4j-api"     % slf4jVersion  % runtime
-  lazy val slf4jlog4j = "org.slf4j" % "slf4j-log4j12" % slf4jVersion  % runtime
-
+  lazy val slf4j       = "org.slf4j" % "slf4j-api"      % slf4jVersion
+  lazy val slf4jSimple = "org.slf4j" % "slf4j-simple "  % slf4jVersion
+  lazy val slf4jlog4j  = "org.slf4j" % "slf4j-log4j12"  % slf4jVersion
   lazy val slf4jDependencies       = Seq(slf4j, slf4jlog4j)
-  lazy val testDependencies        = Seq(junit, scalaTest)
+  
+  lazy val scalazFull = "org.scalaz"     %% "scalaz-full"  %  "6.0.4"
 
-  lazy val stdlibDependencies      = Seq(scalazFull) ++ testDependencies ++ slf4jDependencies
+  lazy val stdlibDependencies      = Seq(scalazFull) ++ testDependencies ++ slf4jDependencies ++ apacheCommonsDependencies
   lazy val fundamentalDependencies = stdlibDependencies
   lazy val sortingDependencies     = stdlibDependencies
   lazy val searchingDependencies   = stdlibDependencies
@@ -138,6 +144,7 @@ object ProjectBuild extends Build {
     id = buildProject + "-all",
     base = file ("."),
     settings = buildSettings ++ Seq(
+      resolvers ++= allResolvers,
       description := "Wraps up all the modules"
     )
   ) aggregate (
@@ -155,6 +162,7 @@ object ProjectBuild extends Build {
     id = buildProject + "-stdlib",
     base = file ("stdlib"),
     settings = buildSettings ++ Seq (
+      resolvers ++= allResolvers,
       libraryDependencies ++= stdlibDependencies,
       description := "The core module"
     )

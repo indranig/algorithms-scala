@@ -7,7 +7,7 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class FundamentalsSpec extends AbstractFlatSpec {
-	"StdIO" should "be able to read a txt file in its stdlib src/main/resources directory" in {
+	"This" should "be able to read a txt file in its stdlib src/main/resources directory" in {
 		val maybeStream = StdIO.resourceAsString(List("numbers.txt"))
 		maybeStream match {
 			case Some(source) =>
@@ -17,7 +17,8 @@ class FundamentalsSpec extends AbstractFlatSpec {
 		}
 	}
 	
-	"StdIO" should "be able to read a txt file in its local src/main/resources directory" in {
+	
+	"This" should "be able to read a txt file in its local src/main/resources directory" in {
 		val maybeStream = StdIO.resourceAsString(List("tobe.txt"))
 		maybeStream match {
 			case Some(source) =>

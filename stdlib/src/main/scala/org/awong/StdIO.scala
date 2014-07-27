@@ -4,7 +4,7 @@ import java.io.{File => JFile}
 import scala.io.Source
 import java.io.{File => JFile}
 
-object StdIO {
+object StdIO extends Logging {
 	/**
 	 * Get a child of a file. For example,
 	 * 
@@ -12,8 +12,20 @@ object StdIO {
 	 * 
 	 * corresponds to ~/b/c
 	 */
-	private def subFile(file: JFile, children: String*) = {
+	private def subFile(file: JFile, children: String*): JFile = {
 		children.foldLeft(file)((file, child) => new JFile(file, child))
+	}
+	
+	private def directoriesOfOtherModules(parentDir: JFile, currentModule: JFile): IndexedSeq[JFile] = {
+		import collection.immutable.ListSet
+		val uris = ListSet("stdlib", "fundamentals", "sorting", "searching", "graphs", "strings", "context", "beyond")
+		val files = uris map { new JFile(parentDir, _) }
+		val otherModules = files - currentModule
+		otherModules.toIndexedSeq
+	}
+	
+	private def getResourceFile(moduleDir: JFile, resourcePath: List[String]): JFile = {
+		subFile(moduleDir, ("src" ::"main" :: "resources" :: resourcePath): _*)
 	}
 	
 	/**
@@ -21,13 +33,23 @@ object StdIO {
 	 * resources to the output directory, then the class loader cannot find them.
 	 */
 	private def resourceAsFileFromSrc(resourcePath: List[String]): Option[JFile] = {
-		val classesDir = new JFile(getClass.getResource(".").toURI)
-		val projectDir = classesDir.getParentFile.getParentFile.getParentFile.getParentFile
-		val resourceFile = subFile(projectDir, ("src" :: "src" ::"main" :: "main" ::"resources" :: "resources" :: resourcePath): _*)
+		val uri = getClass.getResource(".").toURI
+		logger.debug("Accessing uri {}.", uri)
+		val classesDir = new JFile(uri)
+		val moduleDir = classesDir.getParentFile.getParentFile.getParentFile.getParentFile.getParentFile
+		logger.debug("Accessing moduleDir {}", moduleDir.toString)
+		val parentDir = moduleDir.getParentFile
+		val resourceFile = getResourceFile(moduleDir, resourcePath)
+		logger.debug("Accessing resourceFile {}", resourceFile.toString)
 		if (resourceFile.exists) {
 			Some(resourceFile)
 		} else {
-			None
+			val otherModules = directoriesOfOtherModules(parentDir, moduleDir)
+			val otherResources = for (m <- otherModules) yield getResourceFile(m, resourcePath)
+			otherResources.find(_.exists) match {
+				case Some(r) => Some(r)
+				case None => None
+			}
 		}
 	}
 
@@ -45,6 +67,7 @@ object StdIO {
 	def resourceAsStringStreamFromSrc(resourcePath: List[String]): Option[Stream[String]] = {
 		for (src <- resourceAsStreamFromSrc(resourcePath)) yield src.getLines.toStream
 	}
+	
 	def resourceAsString(resourcePath: List[String]): Option[String] = {
 		resourceAsStreamFromSrc(resourcePath) match {
 			case Some(source) =>
