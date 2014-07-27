@@ -122,10 +122,13 @@ object Dependencies {
   lazy val slf4jlog4j  = "org.slf4j" % "slf4j-log4j12"  % slf4jVersion
   lazy val slf4jDependencies       = Seq(slf4j, slf4jlog4j)
   
-  lazy val scalazFull     = "org.scalaz"     %% "scalaz-full"  %  "6.0.4"
-  lazy val typesafeConfig = "com.typesafe"   %  "config"       %  "1.2.1"
+  lazy val scalazFull     = "org.scalaz"             %% "scalaz-full"  %  "6.0.4"
+  lazy val typesafeConfig = "com.typesafe"           %  "config"       %  "1.2.1"
+  lazy val rxScala        = "com.netflix.rxjava"     %  "rxjava-scala" %  "0.15.0"
+  lazy val scalaAsync     = "org.scala-lang.modules" %% "scala-async"  %  "0.9.0-M2"
+  lazy val scalaSwing     = "org.scala-lang"         %  "scala-swing"  %  scalaVersion
 
-  lazy val stdlibDependencies      = Seq(scalazFull, typesafeConfig) ++ testDependencies ++ slf4jDependencies ++ apacheCommonsDependencies
+  lazy val stdlibDependencies      = Seq(scalaSwing, typesafeConfig, rxScala, scalaAsync) ++ testDependencies ++ slf4jDependencies ++ apacheCommonsDependencies
   lazy val fundamentalDependencies = stdlibDependencies
   lazy val sortingDependencies     = stdlibDependencies
   lazy val searchingDependencies   = stdlibDependencies

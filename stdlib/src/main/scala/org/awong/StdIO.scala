@@ -2,6 +2,7 @@ package org.awong
 
 import java.io.{File => JFile}
 import scala.io.Source
+import rx.lang.scala.Observable
 import com.typesafe.config.ConfigFactory
 
 object StdIO extends Logging {
@@ -82,5 +83,29 @@ object StdIO extends Logging {
 			case None =>
 				None
 		}
+	}
+	
+	def resourceAsObservable(resourcePath: List[String]): Option[Observable[String]] = {
+		import org.apache.commons.io.FileUtils
+		import collection.JavaConverters._
+		resourceAsFileFromSrc(resourcePath) match {
+			case Some(file) =>
+				val jlineIterator = FileUtils.lineIterator(file, defaultEncoding)
+				try {
+					val iterator: Iterator[String] = jlineIterator.asScala
+					Some(toObservable(iterator))
+				} finally {
+					jlineIterator.close
+				}
+			case None =>
+				None
+		}
+	}
+	
+	def toObservable[T](iterator: Iterator[T]): Observable[T] = {
+		Observable(iterator.toStream: _*)
+	}
+	def toObservable[T](iterable: Iterable[T]): Observable[T] = {
+		Observable(iterable.toStream: _*)
 	}
 }

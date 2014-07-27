@@ -10,6 +10,7 @@ trait AbstractSpec
 	with ShouldMatchers
 	with MustMatchers
 	with BeforeAndAfter
+	with Logging
 
 trait AbstractFlatSpec
 	extends FlatSpec
