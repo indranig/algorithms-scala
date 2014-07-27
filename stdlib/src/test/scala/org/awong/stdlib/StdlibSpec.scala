@@ -7,7 +7,7 @@ import org.awong.StdIO
 
 @RunWith(classOf[JUnitRunner])
 class StdlibSpec extends AbstractFlatSpec {
-	"StdIO" should "be able to read a txt file in its local src/main/resources directory" in {
+	"This" should "be able to read a txt file in its local src/main/resources directory" in {
 		val maybeStream = StdIO.resourceAsString(List("numbers.txt"))
 		maybeStream match {
 			case Some(source) =>
@@ -16,4 +16,11 @@ class StdlibSpec extends AbstractFlatSpec {
 				fail
 		}
 	}
+	
+	"This" should "be able to read a stdlib/src/main/resources/application.conf" in {
+		val conf = StdIO.config
+		conf.getString("application.defaultEncoding") should equal ("UTF-8")
+	}
+	
+	
 }

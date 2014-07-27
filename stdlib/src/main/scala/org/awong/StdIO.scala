@@ -2,9 +2,14 @@ package org.awong
 
 import java.io.{File => JFile}
 import scala.io.Source
-import java.io.{File => JFile}
+import com.typesafe.config.ConfigFactory
 
 object StdIO extends Logging {
+	lazy val config = ConfigFactory.load
+	
+	lazy val defaultEncoding = config.getString("application.defaultEncoding")
+
+	
 	/**
 	 * Get a child of a file. For example,
 	 * 
@@ -53,12 +58,10 @@ object StdIO extends Logging {
 		}
 	}
 
-	val defaultEncoding = "UTF-8"
-	
 	def resourceAsStreamFromSrc(resourcePath: List[String]): Option[Source] = {
 		resourceAsFileFromSrc(resourcePath) match {
 			case Some(file) =>
-				Some(Source.fromFile(file, "UTF-8"))
+				Some(Source.fromFile(file, defaultEncoding))
 			case None =>
 				None
 		}
