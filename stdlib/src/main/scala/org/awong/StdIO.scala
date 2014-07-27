@@ -21,17 +21,24 @@ object StdIO extends Logging {
 		children.foldLeft(file)((file, child) => new JFile(file, child))
 	}
 	
-	private def directoriesOfOtherModules(parentDir: JFile, currentModule: JFile): IndexedSeq[JFile] = {
+	private def directoriesOfOtherModules(parentDir: JFile, currentModule: JFile): List[JFile] = {
 		import collection.immutable.ListSet
 		val uris = ListSet("stdlib", "fundamentals", "sorting", "searching", "graphs", "strings", "context", "beyond")
 		val files = uris map { new JFile(parentDir, _) }
 		val otherModules = files - currentModule
-		otherModules.toIndexedSeq
+		otherModules.toList
 	}
 	
-	private def getResourceFile(moduleDir: JFile, resourcePath: List[String]): JFile = {
-		subFile(moduleDir, ("src" ::"main" :: "resources" :: resourcePath): _*)
+	private def getResourceFiles(moduleDir: JFile, resourcePath: List[String]): List[JFile] = {
+		def getResourceFileImpl(moduleDir: JFile, dirs: List[String], resourcePath: List[String]): JFile = {
+			subFile(moduleDir, (dirs ::: resourcePath): _*)
+		}
+		val resources = List("src"::"main"::"resources"::Nil, "src"::"test"::"resources"::Nil)
+		
+		val resourceFiles = for (r <- resources) yield getResourceFileImpl(moduleDir, r, resourcePath)
+		resourceFiles
 	}
+	
 	
 	/**
 	 * Get a resource from the `src/main/resources` directory. Eclipse does not copy
@@ -44,17 +51,14 @@ object StdIO extends Logging {
 		val moduleDir = classesDir.getParentFile.getParentFile.getParentFile.getParentFile.getParentFile
 		logger.debug("Accessing moduleDir {}", moduleDir.toString)
 		val parentDir = moduleDir.getParentFile
-		val resourceFile = getResourceFile(moduleDir, resourcePath)
-		logger.debug("Accessing resourceFile {}", resourceFile.toString)
-		if (resourceFile.exists) {
-			Some(resourceFile)
-		} else {
-			val otherModules = directoriesOfOtherModules(parentDir, moduleDir)
-			val otherResources = for (m <- otherModules) yield getResourceFile(m, resourcePath)
-			otherResources.find(_.exists) match {
-				case Some(r) => Some(r)
-				case None => None
-			}
+		val resourceFiles = getResourceFiles(moduleDir, resourcePath)
+		resourceFiles.find( _.exists ) match {
+			case Some(f) => Some(f)
+			case None =>
+				val otherModules = directoriesOfOtherModules(parentDir, moduleDir)
+				val listOfOtherResouceFiles = for (m <- otherModules) yield getResourceFiles(m, resourcePath)
+				val allFiles = for (resourceFiles <- listOfOtherResouceFiles; file <- resourceFiles if file.exists) yield file
+				allFiles.headOption
 		}
 	}
 
