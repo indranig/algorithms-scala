@@ -1,4 +1,6 @@
-package org.awong.stdlib
+package org.awong.stdlib.statistics
+
+import scala.annotation.tailrec
 
 
 object DistributionExamples {

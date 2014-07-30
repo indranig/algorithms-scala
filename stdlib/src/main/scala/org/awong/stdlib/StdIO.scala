@@ -1,14 +1,13 @@
-package org.awong
+package org.awong.stdlib
 
 import java.io.{File => JFile}
 import scala.io.Source
 import rx.lang.scala.Observable
 import com.typesafe.config.ConfigFactory
 
-object StdIO extends Logging {
+object StdIO extends org.awong.Logging {
 	lazy val config = ConfigFactory.load
 	
-	lazy val defaultEncoding = config.getString("application.defaultEncoding")
 
 	
 	/**
@@ -66,14 +65,26 @@ object StdIO extends Logging {
 	def resourceAsStreamFromSrc(resourcePath: List[String]): Option[Source] = {
 		resourceAsFileFromSrc(resourcePath) match {
 			case Some(file) =>
-				Some(Source.fromFile(file, defaultEncoding))
+				Some(Source.fromFile(file, Defaults.defaultEncoding))
 			case None =>
 				None
 		}
 	}
 	
-	def resourceAsStringStreamFromSrc(resourcePath: List[String]): Option[Stream[String]] = {
-		for (src <- resourceAsStreamFromSrc(resourcePath)) yield src.getLines.toStream
+	def readInts(resourcePath: List[String]): Stream[Int] = {
+		readStrings(resourcePath) map { _.toInt }
+	}
+	
+	def readDoubles(resourcePath: List[String]): Stream[Double] = {
+		readStrings(resourcePath) map { _.toDouble }
+	}
+	
+	def readStrings(resourcePath: List[String]): Stream[String] = {
+		val maybeStream = for (src <- resourceAsStreamFromSrc(resourcePath)) yield src.getLines.toStream
+		maybeStream match {
+			case Some(stream) => stream
+			case None => Stream[String]()
+		}
 	}
 	
 	def resourceAsString(resourcePath: List[String]): Option[String] = {
@@ -90,7 +101,7 @@ object StdIO extends Logging {
 		import collection.JavaConverters._
 		resourceAsFileFromSrc(resourcePath) match {
 			case Some(file) =>
-				val jlineIterator = FileUtils.lineIterator(file, defaultEncoding)
+				val jlineIterator = FileUtils.lineIterator(file, Defaults.defaultEncoding)
 				try {
 					val iterator: Iterator[String] = jlineIterator.asScala
 					Some(toObservable(iterator))

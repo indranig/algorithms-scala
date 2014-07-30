@@ -1,6 +1,6 @@
 package org.awong.fundamentals
 
-import org.awong.StdIO
+import org.awong.stdlib.StdIO
 import org.awong.AbstractFlatSpec
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner

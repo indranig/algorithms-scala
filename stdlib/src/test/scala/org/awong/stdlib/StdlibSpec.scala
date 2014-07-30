@@ -3,7 +3,6 @@ package org.awong.stdlib
 import org.awong.AbstractFlatSpec
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.awong.StdIO
 
 @RunWith(classOf[JUnitRunner])
 class StdlibSpec extends AbstractFlatSpec {

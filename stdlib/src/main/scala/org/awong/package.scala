@@ -21,10 +21,10 @@ package object awong {
 	 * resources to the output directory, then the class loader cannot find them.
 	 */
 	def resourceAsStreamFromSrc(resourcePath: List[String]): Option[Source] = {
-		StdIO.resourceAsStreamFromSrc(resourcePath)
+		org.awong.stdlib.StdIO.resourceAsStreamFromSrc(resourcePath)
 	}
-	def resourceAsStringStreamFromSrc(resourcePath: List[String]): Option[Stream[String]] = {
-		StdIO.resourceAsStringStreamFromSrc(resourcePath)
+	def resourceAsStringStreamFromSrc(resourcePath: List[String]): Stream[String] = {
+		org.awong.stdlib.StdIO.readStrings(resourcePath)
 	}
 
 }
