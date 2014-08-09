@@ -2,10 +2,10 @@ package org.awong.sorting
 
 object Selection {
 	def sort[T <: Ordered[T]](xs: Array[T]): Array[T] = {
-		def swap(a: Array[T], i: Int, j: Int): Array[T] = {
-			val swap = a(i)
+		def swap[T](a: Array[T], i: Int, j: Int): Array[T] = {
+			val temp = a(i)
 			a(i) = a(j)
-			a(j) = swap
+			a(j) = temp
 			a
 		}
 

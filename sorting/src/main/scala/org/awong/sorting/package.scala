@@ -1,7 +1,6 @@
 package org.awong
 
 package object sorting {
-	object Heap
 	object IndexMaxPQ
 	object IndexMinPQ
 	object MaxPQ
@@ -9,6 +8,5 @@ package object sorting {
 	object MinPQ
 	object Multiway
 	object Quick3way
-	object Shell
 	object TopM
 }
