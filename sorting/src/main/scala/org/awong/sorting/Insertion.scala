@@ -3,7 +3,9 @@ package org.awong.sorting
 import scala.collection.mutable.ArrayBuffer
 
 object Insertion {
-	def sort[T <: Ordered[T]](a: Array[T]): Array[T] = {
+	def sort[T](xs: Array[T])(implicit ordering: Ordering[T]): Array[T] = {
+		import ordering._
+		var a = xs
 		for (i <- 1 until a.length) {
 			// A[ i ] is added in the sorted sequence A[0, .. i-1]
 			// save A[i] to make a hole at index iHole

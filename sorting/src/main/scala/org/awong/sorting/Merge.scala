@@ -1,7 +1,8 @@
 package org.awong.sorting
 
 object Merge {
-	def sort[T <: Ordered[T]](xs:Seq[T]): Seq[T] = {
+	def sort[T](xs:Seq[T])(implicit ordering: Ordering[T]): Seq[T] = {
+		import ordering._
 		def merge(xs:Seq[T], ys:Seq[T]): Seq[T] = {
 			(xs,ys) match {
 				case (_,_) if xs.isEmpty => ys
@@ -11,10 +12,10 @@ object Merge {
 					val xs1 = xs.tail
 					val y = ys.head
 					val ys1 = ys.tail
-					if (x < y) { 
-						x +: x +: merge(xs1, ys)  
+					if (x <= y) { 
+						x +: merge(xs1, ys)
 					} else {
-						y +: y +: merge(xs, ys1)
+						y +: merge(xs, ys1)
 					}
 				}
 			}
@@ -27,4 +28,27 @@ object Merge {
 			merge(sort(ys), sort(zs))
 		}
 	}
+	
+	
+	def mergeSort(input: List[Int]) = {
+		def merge(left: List[Int], right: List[Int]): Stream[Int] = (left, right) match {
+			case (x :: xs, y :: ys) if x <= y =>
+				x #:: merge(xs, right)
+			case (x :: xs, y :: ys) =>
+				y #:: merge(left, ys)
+			case _ =>
+				if (left.isEmpty)
+					right.toStream
+				else
+					left.toStream
+		}
+		def sort(input: List[Int], length: Int): List[Int] = input match {
+			case Nil | List(_) => input
+			case _ =>
+				val middle = length / 2
+				val (left, right) = input splitAt middle
+				merge(sort(left, middle), sort(right, middle + length % 2)).toList
+		}
+		sort(input, input.length)
+	}	
 }

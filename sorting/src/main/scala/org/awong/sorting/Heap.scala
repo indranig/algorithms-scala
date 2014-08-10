@@ -1,14 +1,8 @@
 package org.awong.sorting
 
 object Heap {
-	def sort[T <: Ordered[T]](xs: Array[T]): Array[T] = {
-		def swap[T](a: Array[T], i: Int, j: Int): Array[T] = {
-			val temp = a(i)
-			a(i) = a(j)
-			a(j) = temp
-			a
-		}
-	
+	def sort[T](xs: Array[T])(implicit ordering: Ordering[T]): Array[T] = {
+		import ordering._
 		def siftdown(xs: Array[T], i: Int, size: Int): Array[T] = {
 			var a = xs
 			var l = 2*i+1

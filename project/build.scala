@@ -80,6 +80,7 @@ object Versions {
   lazy val scalaVersion       = BuildSettings.buildScalaVersion
   lazy val twitterUtilVersion = "6.12.1"
   lazy val slf4jVersion       = "1.6.4"
+  lazy val scalaTestVersion   = "2.0"
 }
 
 
@@ -90,10 +91,10 @@ object Dependencies {
   lazy val test     = "test"
   lazy val runtime  = "runtime"
 
-  lazy val junit      = "junit"          %  "junit"        %  "4.10"   % test
-  lazy val mockito    = "org.mockito"    %  "mockito-core" %  "1.9.5"  % test
-  lazy val scalaTest  = "org.scalatest"  %% "scalatest"    %  "1.9.1"  % test
-  lazy val scalaCheck = "org.scalacheck" %% "scalacheck"   %  "1.10.1" % test
+  lazy val junit      = "junit"          %  "junit"        %  "4.10"           % test
+  lazy val mockito    = "org.mockito"    %  "mockito-core" %  "1.9.5"          % test
+  lazy val scalaTest  = "org.scalatest"  %% "scalatest"    %  scalaTestVersion % test
+  lazy val scalaCheck = "org.scalacheck" %% "scalacheck"   %  "1.10.1"         % test
   lazy val testDependencies = Seq(junit, scalaTest, scalaCheck, mockito)
 
   lazy val twitterOrg            = "com.twitter"

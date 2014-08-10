@@ -2,25 +2,22 @@ package org.awong
 
 import org.scalatest._
 
-import org.scalatest.matchers.MustMatchers
-import org.scalatest.matchers.ShouldMatchers
 
 trait AbstractSpec
 	extends Suite
-	with ShouldMatchers
-	with MustMatchers
+	with Matchers
 	with BeforeAndAfter
 	with Logging
 
 trait AbstractFlatSpec
-	extends FlatSpec
+	extends FlatSpecLike
 	with BeforeAndAfter
 	with AbstractSpec
 
 
 
 abstract class AbstractWordSpec
-	extends WordSpec
+	extends WordSpecLike
 	with AbstractSpec
 	with BeforeAndAfter
 	with BeforeAndAfterAll
