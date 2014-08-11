@@ -10,7 +10,7 @@ class SortingSpec extends AbstractWordSpec {
 	var smallArray: Array[Int]  = _
 	
 	before {
-		range = 1 to 10
+		range = 1 to 100
 		var xs = util.Random.shuffle(range.toList)
 		smallArray = xs.toArray
 	}
@@ -18,7 +18,7 @@ class SortingSpec extends AbstractWordSpec {
 		"sorting a small array" should {
 			"should sort correctly" in {
 				val result = Heap.sort(smallArray)
-				result should === ((1 to 10).toArray)
+				result should === (range.toArray)
 			}
 		}
 	}
@@ -27,7 +27,7 @@ class SortingSpec extends AbstractWordSpec {
 		"sorting a small array" should {
 			"should sort correctly" in {
 				val result = Insertion.sort(smallArray)
-				result should === ((1 to 10).toArray)
+				result should === (range.toArray)
 			}
 		}
 	}
@@ -35,7 +35,7 @@ class SortingSpec extends AbstractWordSpec {
 		"sorting a small array" should {
 			"should sort correctly" in {
 				val result = Selection.sort(smallArray)
-				result should === ((1 to 10).toArray)
+				result should === (range.toArray)
 			}
 		}
 	}
@@ -43,15 +43,15 @@ class SortingSpec extends AbstractWordSpec {
 		"sorting a small array" should {
 			"should sort correctly" in {
 				val result = Shell.sort(smallArray)
-				result should === ((1 to 10).toArray)
+				result should === (range.toArray)
 			}
 		}
 	}
 	"Merge sort" when {
 		"sorting a small array" should {
 			"should sort correctly" in {
-				val result = Merge.mergeSort(smallArray.toList)
-				result should === ((1 to 10).toArray)
+				val result = Merge.sort(smallArray.toList)
+				result should === (range.toArray)
 			}
 		}
 	}
@@ -59,7 +59,7 @@ class SortingSpec extends AbstractWordSpec {
 		"sorting a small array" should {
 			"should sort correctly" in {
 				val result = Quick.sort(smallArray.toSeq)
-				result should === ((1 to 10).toArray)
+				result should === (range.toArray)
 			  
 			}
 		}

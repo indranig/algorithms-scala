@@ -8,17 +8,13 @@ package object fundamentals {
 	object Interval2D
 	object Point2D
 	object Queue
-	object QuickFindUF
-	object QuickUnionUF
 	object ResizingArrayQueue
 	object ResizingArrayStack
 	object Stack
 	object StaticSetofInts
 	object ThreeSum
-	object ThreeSumFast
-	object Transaction
-	object UF
+	object ThreeSumFast 
 	object Vector
-	object WeightedQuickUnionUF
 	object Whitelist
+	
 }
