@@ -1,5 +1,6 @@
 package org.awong.fundamentals.unionfind
 
+
 import org.awong.fundamentals.FundamentalsData
 import org.awong.fundamentals.FundamentalsData._
 
@@ -31,7 +32,7 @@ class UnionFindSpec extends AbstractWordSpec {
 			test(uf, data, 3)
 		}
 	}
-	"QuickUnionUF" when {
+	"QuickUnionUF" should {
 		"count components in a tiny digraph correctly" in {
 			val data = FundamentalsData.tinyUnionFind
 			val uf = new QuickUnionUF(data.n)
@@ -43,7 +44,7 @@ class UnionFindSpec extends AbstractWordSpec {
 			test(uf, data, 3)
 		}
 	}
-	"WeightedQuickUnionUF" when {
+	"WeightedQuickUnionUF" should {
 		"count components in a tiny digraph correctly" in {
 			val data = FundamentalsData.tinyUnionFind
 			val uf = new WeightedQuickUnionUF(data.n)
@@ -52,6 +53,18 @@ class UnionFindSpec extends AbstractWordSpec {
 		"count components in a medium digraph correctly" in {
 			val data = FundamentalsData.mediumUnionFind
 			val uf = new WeightedQuickUnionUF(data.n)
+			test(uf, data, 3)
+		}
+	}
+	"WeightedQuickUnionCompressionUF" should {
+		"count components in a tiny digraph correctly" in {
+			val data = FundamentalsData.tinyUnionFind
+			val uf = new WeightedQuickUnionCompressionUF(data.n)
+			test(uf, data, 2)
+		}
+		"count components in a medium digraph correctly" in {
+			val data = FundamentalsData.mediumUnionFind
+			val uf = new WeightedQuickUnionCompressionUF(data.n)
 			test(uf, data, 3)
 		}
 	}
