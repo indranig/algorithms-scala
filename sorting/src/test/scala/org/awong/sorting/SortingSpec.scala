@@ -50,7 +50,7 @@ class SortingSpec extends AbstractWordSpec {
 	"Merge sort" when {
 		"sorting a small array" should {
 			"should sort correctly" in {
-				val result = Merge.sort(smallArray.toList)
+				val result = Merge.sort(smallArray)
 				result should === (range.toArray)
 			}
 		}
