@@ -20,3 +20,19 @@ like JUnit or ScalaTest.
 just as it would be easy to "cheat" using the Java collections framework. I
 will avoid this as far as possible and use scala.Array for data structures as it is the natural
 analog of a Java array. For interfaces, a scala.collection.Seq[A] will be favored.
+
+
+Excluded data:
+==============
+
+The following data files are missing from this repository, due to their large size:
+
+
+|File           |Size      | Used by
+|---------------|----------|---------------------
+|leipzig1M.txt  |129.6 MB  | searching
+|largeUF.txt    | 25.8 MB  | fundamentals
+
+An archive that contains these data files (as well as all the other ones used in the book) can be found
+[here](http://algs4.cs.princeton.edu/code/algs4-data.zip). Place them in the `resources` directory,
+preferably under `test` rather than `main`
