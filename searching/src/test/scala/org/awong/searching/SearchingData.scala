@@ -15,6 +15,10 @@ object SearchingData {
 		)
 	}
 	
+	def tale: Stream[String] = {
+		org.awong.stdlib.StdIO.readStrings("tale.txt"::Nil)
+	}
+	
 	def listTxt: String = {
 		"was it the of"
 	}
