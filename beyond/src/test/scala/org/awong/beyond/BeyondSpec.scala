@@ -12,4 +12,8 @@ class BeyondSpec extends AbstractFlatSpec {
 	"This" should "fail a trivial test" in {
 		fail
 	}
+	
+	"This" should "load 1423 pairs" in {
+		BeyondData.rs1423.nPairs should be (1423)
+	}
 }
