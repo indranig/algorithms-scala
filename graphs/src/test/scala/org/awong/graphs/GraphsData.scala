@@ -35,7 +35,7 @@ object GraphsData {
 		}
 	}
 	def getNodes(edges: Seq[WeightedEdge]): Set[Int] = {
-		edges.foldLeft(Set[Int]()){ case (accum, (left, right)) =>
+		edges.foldLeft(Set[Int]()){ case (accum, (left, right, _)) =>
 			Set[Int](left, right) ++ accum
 		}
 	}
