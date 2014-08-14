@@ -5,6 +5,10 @@ object SearchingData {
 		"""S E A R C H E X A M P L E"""
 	}
 	
+	def tinyTinyTale: String = {
+		tinyTale.head
+	}
+	
 	def tinyTale: Seq[String] = {
 		Seq(
 			"it was the best of times it was the worst of times",

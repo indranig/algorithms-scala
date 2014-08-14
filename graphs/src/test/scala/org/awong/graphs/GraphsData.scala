@@ -29,14 +29,28 @@ object GraphsData {
 		def nEdges = edges.size
 	}
 	
-	def getNodes(edges: Seq[UnweightedEdge]): Set[Int] = {
-		edges.foldLeft(Set[Int]()){ case (accum, (left, right)) =>
-			Set[Int](left, right) ++ accum
+	def getUnweightedNodes(edges: Seq[UnweightedEdge]): Stream[Int] = {
+		edges.foldLeft(Stream[Int]()){ case (accum, (left, right)) =>
+			var result = accum
+			if (!accum.contains(left)) {
+				result = left #:: result 
+			}
+			if (!accum.contains(right)) {
+				result = right #:: result 
+			}
+			result
 		}
 	}
-	def getNodes(edges: Seq[WeightedEdge]): Set[Int] = {
-		edges.foldLeft(Set[Int]()){ case (accum, (left, right, _)) =>
-			Set[Int](left, right) ++ accum
+	def getWeightedNodes(edges: Seq[WeightedEdge]): Stream[Int] = {
+		edges.foldLeft(Stream[Int]()){ case (accum, (left, right, _)) =>
+			var result = accum
+			if (!accum.contains(left)) {
+				result = left #:: result 
+			}
+			if (!accum.contains(right)) {
+				result = right #:: result 
+			}
+			result
 		}
 	}
 	
