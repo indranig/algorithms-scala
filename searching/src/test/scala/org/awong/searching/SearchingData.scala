@@ -59,4 +59,10 @@ object SearchingData {
 			"Valine,GTT,GTC,GTA,GTG"
 		)
 	}
+	def movies: Seq[String] = {
+		org.awong.stdlib.StdIO.readStrings("movies.txt"::Nil)
+	}
+	def leipzig1M: Seq[String] = {
+		org.awong.stdlib.StdIO.readStrings("leipzig1M.txt"::Nil)
+	}
 }
