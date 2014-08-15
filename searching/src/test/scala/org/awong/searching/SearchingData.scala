@@ -1,6 +1,6 @@
 package org.awong.searching
 
-object SearchingData {
+object SearchingData extends org.awong.stdlib.ModuleData {
 	def tinyST: String = {
 		"""S E A R C H E X A M P L E"""
 	}
@@ -20,7 +20,7 @@ object SearchingData {
 	}
 	
 	def tale: Stream[String] = {
-		org.awong.stdlib.StdIO.readStrings("tale.txt"::Nil)
+		resourceAsStringStream("tale.txt")
 	}
 	
 	def listTxt: String = {
@@ -64,9 +64,9 @@ object SearchingData {
 		)
 	}
 	def movies: Seq[String] = {
-		org.awong.stdlib.StdIO.readStrings("movies.txt"::Nil)
+		resourceAsStringStream("movies.txt")
 	}
 	def leipzig1M: Seq[String] = {
-		org.awong.stdlib.StdIO.readStrings("leipzig1M.txt"::Nil)
+		resourceAsStringStream("leipzig1M.txt")
 	}
 }

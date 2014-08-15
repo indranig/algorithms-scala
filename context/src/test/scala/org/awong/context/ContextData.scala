@@ -1,6 +1,6 @@
 package org.awong.context
 
-object ContextData {
+object ContextData extends org.awong.stdlib.ModuleData {
 	def abra: String = {
 		"ABRACADABRA!"
 	}

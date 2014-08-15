@@ -1,6 +1,6 @@
 package org.awong.fundamentals
 
-object FundamentalsData {
+object FundamentalsData extends org.awong.stdlib.ModuleData {
 	def testTransactions: Seq[Transaction] = {
 		Seq(
 			Transaction("Turing", "6/17/1990", 655.08),
@@ -43,7 +43,7 @@ object FundamentalsData {
 	}
 	
 	def get1Kints(): Stream[Int] = {
-		org.awong.stdlib.StdIO.readInts("1Kints.txt"::Nil)
+		resourceAsIntStream("1Kints.txt")
 	}
 	
 	def tinyT: Array[Int] = {

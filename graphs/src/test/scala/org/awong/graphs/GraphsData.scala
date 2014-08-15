@@ -1,6 +1,6 @@
 package org.awong.graphs
 
-object GraphsData {
+object GraphsData extends org.awong.stdlib.ModuleData {
 	def jobs: Seq[String] = {
 		Seq(
 			"Algorithms/Theoretical CS/Databases/Scientific Computing",
@@ -292,14 +292,14 @@ object GraphsData {
 	
 	
 	def mediumEWD: Seq[String] = {
-		org.awong.stdlib.StdIO.readStrings("mediumEWD.txt"::Nil)
+		resourceAsStringStream("mediumEWD.txt")
 	}
 	
 	def mediumEWG: Seq[String] = {
-		org.awong.stdlib.StdIO.readStrings("mediumEWG.txt"::Nil)
+		resourceAsStringStream("mediumEWG.txt")
 	}
 	def mediumG: Seq[String] = {
-		org.awong.stdlib.StdIO.readStrings("mediumG.txt"::Nil)
+		resourceAsStringStream("mediumG.txt")
 	}
 	
 	def movies = {

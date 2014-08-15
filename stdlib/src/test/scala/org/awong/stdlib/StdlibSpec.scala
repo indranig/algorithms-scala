@@ -6,9 +6,13 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class StdlibSpec extends AbstractFlatSpec {
+	"This" should "be able to read a stdlib/src/main/resources/application.conf" in {
+		Defaults.defaultEncoding should equal ("UTF-8")
+	}
+	
+	
 	"This" should "be able to read a txt file in its local src/main/resources directory" in {
-		val maybeStream = StdIO.resourceAsString(List("numbers.txt"))
-		maybeStream match {
+		 StdlibData.resourceAsString("numbers.txt") match {
 			case Some(source) =>
 				(source.mkString) should equal("1 2 3 4 5")
 			case None =>
@@ -16,15 +20,10 @@ class StdlibSpec extends AbstractFlatSpec {
 		}
 	}
 	
-	"This" should "be able to read a stdlib/src/main/resources/application.conf" in {
-		val conf = StdIO.config
-		conf.getString("application.defaultEncoding") should equal ("UTF-8")
-	}
-	
 	"This" should "be able to read a txt file in its local src/main/resources directory as an observable stream of lines" in {
-		val maybeObservable = StdIO.resourceAsObservable(List("numbers.txt"))
+		val maybeObservable = StdlibData.resourceAsObservable("numbers.txt")
 		maybeObservable match {
-			case Some(observable) => {
+			case util.Success(observable) => {
 				var buffer = scala.collection.mutable.Buffer[String]()
 				observable.subscribe(
 					it => {
@@ -41,7 +40,7 @@ class StdlibSpec extends AbstractFlatSpec {
 				buffer.size should be (1)
 				buffer.toList should be ("1 2 3 4 5"::Nil)
 			}
-			case None =>
+			case util.Failure(_) =>
 				fail
 		}
 	}

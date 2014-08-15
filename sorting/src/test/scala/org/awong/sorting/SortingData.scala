@@ -1,8 +1,6 @@
 package org.awong.sorting
 
-import scala.Array.canBuildFrom
-
-object SortingData {
+object SortingData extends org.awong.stdlib.ModuleData {
 	private def split(xf: String): Array[String] = {
 		xf.split(" ")
 	}
