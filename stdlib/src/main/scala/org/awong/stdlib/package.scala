@@ -1,12 +1,6 @@
 package org.awong
 
 package object stdlib {
-	object Defaults {
-		lazy val defaultEncoding = StdIO.config.getString("application.defaultEncoding")
-		lazy val defaultLang= StdIO.config.getString("application.lang")
-		lazy val defaultCountry = StdIO.config.getString("application.country")
-		lazy val defaultLocale = new java.util.Locale(defaultLang, defaultCountry)
-	}
 
 	object BinaryDump {
 	
