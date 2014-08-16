@@ -1,15 +1,14 @@
 package org.awong.graphs
 
-import org.awong.AbstractFlatSpec
+import org.awong.AbstractWordSpec
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class GraphsSpec extends AbstractFlatSpec {
-	"This" should "pass a trivial test" in {
-		1 should equal (1 + 0)
-	}
-	"This" should "fail a trivial test" in {
-		fail
+class GraphsSpec extends AbstractWordSpec {
+	"This" should {
+		"count mediumG.txt" in {
+			GraphsData.mediumG.size should be (1274)
+		}
 	}
 }

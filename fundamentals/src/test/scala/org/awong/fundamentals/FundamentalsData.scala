@@ -42,8 +42,8 @@ object FundamentalsData extends org.awong.stdlib.ModuleData {
 		"""to be or not to - be - - that - - - is"""
 	}
 	
-	def get1Kints(): Stream[Int] = {
-		resourceAsIntStream("1Kints.txt")
+	def get1Kints(): Seq[Int] = {
+		resourceAsInts("1Kints.txt")
 	}
 	
 	def tinyT: Array[Int] = {

@@ -81,7 +81,7 @@ trait ResourceLoaderLike { this: org.awong.Logging =>
 		}
 	}
 	
-	def resourceAsString(filename: String) : Option[String] = {
+	def resourceAsString(filename: String): Option[String] = {
 		val tryString = resourceAsSource(filename) map { source =>
 			readSource(source)(_.mkString)
 		} getOrElse {
@@ -90,16 +90,24 @@ trait ResourceLoaderLike { this: org.awong.Logging =>
 		tryString.toOption
 	}
 	
-	def resourceAsStringStream(filename: String) : Stream[String] = {
-		resourceAsFile(filename) match {
-			case Some(file) =>
-				val tryStream = readFile(file) { iter =>
-					iter.toStream
+	def resourceAsStrings(filename: String): Seq[String] = {
+		val maybeSource = resourceAsSource(filename)
+		maybeSource match {
+			case None => Seq[String]()
+			case Some(source) =>
+				val tryStrings = readSource(source)(_.getLines.toIndexedSeq)
+				tryStrings match {
+					case Success(seq) => seq
+					case Failure(_) => Seq[String]()
 				}
-				tryStream.getOrElse(Seq[String]().toStream)
-			case None =>
-				Seq[String]().toStream
 		}
+	}
+	
+	def resourceAsInts(filename: String): Seq[Int] = {
+		resourceAsStrings(filename).map{ _.trim.toInt }
+	}
+	def resourceAsDoubles(filename: String): Seq[Double] = {
+		resourceAsStrings(filename).map{ _.trim.toDouble }
 	}
 	
 	private def toObservable[T](iterator: Iterator[T]): Observable[T] = {
@@ -110,15 +118,10 @@ trait ResourceLoaderLike { this: org.awong.Logging =>
 	}
 	
 	def resourceAsObservable(filename: String) : Try[Observable[String]] = {
-		val aMaybe = for {source <- resourceAsSource(filename)} yield { readSource(source) { _.getLines } }
-		val tryIterator = aMaybe.getOrElse(Failure(new IllegalArgumentException))
-		tryIterator map { toObservable(_) }
+		val maybeSource = resourceAsSource(filename)
+		val aMaybe = for {source <- maybeSource} yield { readSource(source) { _.getLines.toIndexedSeq } }
+		val trySeq = aMaybe.getOrElse(Failure(new IllegalArgumentException))
+		trySeq map { toObservable(_) }
 	}
 	
-	def resourceAsIntStream(filename: String): Stream[Int] = {
-		resourceAsStringStream(filename) map( _.toInt )
-	}
-	def resourceAsDoubleStream(filename: String): Stream[Double] = {
-		resourceAsStringStream(filename) map( _.toDouble )
-	}
 }

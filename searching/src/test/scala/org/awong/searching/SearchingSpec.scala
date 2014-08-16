@@ -33,17 +33,19 @@ class SearchingSpec extends AbstractWordSpec {
 		maxTuple._2 should be (expectedCount)
 	}
 	
+	"This" should {
+		"read tale.txt correctly" in {
+			SearchingData.tale should have size (16039)
+		}
+		"read movies.txt correctly" in {
+			SearchingData.movies should have size (4188)
+		}
+		
+	}
+	
 	"SequentialSearchBST" should {
 		"count a tinyTale.txt" in {
 			fail()
-		}
-	}
-	"This" should {
-		"pass a trivial test" in {
-			1 should equal (1 + 0)
-		}
-		"read files correctly" in {
-			SearchingData.tale.toArray should have size (10)
 		}
 	}
 }

@@ -23,7 +23,17 @@ object ContextData extends org.awong.stdlib.ModuleData {
 	def tinyTale: Seq[String] = {
 		org.awong.searching.SearchingData.tinyTale
 	}
-	def tale: Stream[String] = {
+	def tale: Seq[String] = {
 		org.awong.searching.SearchingData.tale
+	}
+	
+	def brownian: Seq[String] = {
+		resourceAsStrings("brownian.txt")
+	}
+	def diffusion: Seq[String] = {
+		resourceAsStrings("diffusion.txt")
+	}
+	def mobydick: Seq[String] = {
+		resourceAsStrings("mobydick.txt")
 	}
 }

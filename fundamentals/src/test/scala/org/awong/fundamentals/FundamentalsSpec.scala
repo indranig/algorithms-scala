@@ -1,28 +1,16 @@
 package org.awong.fundamentals
 
-import org.awong.stdlib.StdIO
-import org.awong.AbstractFlatSpec
+import org.awong.AbstractWordSpec
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class FundamentalsSpec extends AbstractFlatSpec {
-	"This" should "be able to read a txt file in its stdlib src/main/resources directory" in {
-		FundamentalsData.resourceAsSource("numbers.txt") match {
-			case Some(source) =>
-				(source.mkString) should equal("1 2 3 4 5")
-			case None =>
-				fail
+class FundamentalsSpec extends AbstractWordSpec {
+	"This" should {
+		"be able to read a txt file in its stdlib src/main/resources directory" in {
+			FundamentalsData.get1Kints should have size 1000
 		}
 	}
 	
 	
-	"This" should "be able to read a txt file in its local src/main/resources directory" in {
-		FundamentalsData.resourceAsSource("tobe.txt") match {
-			case Some(source) =>
-				(source.mkString) should equal("to be or not to - be - - that - - - is")
-			case None =>
-				fail
-		}
-	}
 }

@@ -19,8 +19,8 @@ object SearchingData extends org.awong.stdlib.ModuleData {
 		)
 	}
 	
-	def tale: Stream[String] = {
-		resourceAsStringStream("tale.txt")
+	def tale: Seq[String] = {
+		resourceAsStrings("tale.txt")
 	}
 	
 	def listTxt: String = {
@@ -64,9 +64,9 @@ object SearchingData extends org.awong.stdlib.ModuleData {
 		)
 	}
 	def movies: Seq[String] = {
-		resourceAsStringStream("movies.txt")
+		resourceAsStrings("movies.txt")
 	}
 	def leipzig1M: Seq[String] = {
-		resourceAsStringStream("leipzig1M.txt")
+		resourceAsStrings("leipzig1M.txt")
 	}
 }

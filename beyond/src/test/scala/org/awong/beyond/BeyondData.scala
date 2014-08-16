@@ -10,7 +10,7 @@ object BeyondData extends org.awong.stdlib.ModuleData {
 	}
 	
 	def rs1423: BeyondInput = {
-		val lines = super.resourceAsStringStream("rs1423.txt")
+		val lines = resourceAsStrings("rs1423.txt")
 		val pairs = lines.map{ line =>
 			val tokens = line.split("\\s",2)
 			tokens match {
