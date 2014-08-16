@@ -34,6 +34,9 @@ class SearchingSpec extends AbstractWordSpec {
 	}
 	
 	"This" should {
+		"read medTale correctly" in {
+			SearchingData.medTale.size should be (99)
+		}
 		"read tale.txt correctly" in {
 			SearchingData.tale should have size (16039)
 		}
