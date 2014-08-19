@@ -12,12 +12,14 @@ trait SymbolTable[Key,Value] {
 		get(key).nonEmpty
 	}
 	
-	def isEmpty(key: Key): Boolean = {
+	def isEmpty(): Boolean = {
 		size() == 0
 	}
 	
 	def size(): Int
 	def keys(): Iterable[Key]
+	
+	def fail(msg: String) = throw new IllegalArgumentException(msg)
 }
 
 
@@ -45,7 +47,7 @@ trait OrderedSymbolTable[Key <: Ordered[Key], Value] extends SymbolTable[Key,Val
 	/**
 	 * the key given the rank
 	 */
-	def select(rank: Int): Int
+	def select(rank: Int): Key
 	/**
 	 * delete the smallest key
 	 */

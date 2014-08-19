@@ -12,5 +12,16 @@ class FundamentalsSpec extends AbstractWordSpec {
 		}
 	}
 	
-	
+	"BinarySearch" should {
+		"find something" in {
+			val key = 499
+			val maybeResult = BinarySearch.search(key, 1 to 1000)
+			maybeResult should be (Some(key - 1))
+		}
+		"find nothing" in {
+			val key = 10001
+			val maybeResult = BinarySearch.search(key, 1 to 1000)
+			maybeResult should be (None)
+		}
+	}
 }

@@ -3,6 +3,7 @@ algorithms-scala
 
 This attempts to port the Java code from [Sedgewick's algorithms textbook](http://algs4.cs.princeton.edu/home/)
 to Scala. The original textbook code is in this [repo](https://github.com/alanktwong/AlgorithmsSedgewick).
+See also [Scalacaster](https://github.com/vkostyukov/scalacaster) for a functional approach
 
 Why do this?
 ============

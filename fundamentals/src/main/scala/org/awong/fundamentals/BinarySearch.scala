@@ -1,7 +1,7 @@
 package org.awong.fundamentals
 
 object BinarySearch {
-	def search[A <: Ordered[A]](target: A, sortedList: Seq[A]): Option[Int] = {
+	def search[A <% Ordered[A]](target: A, sortedList: Seq[A]): Option[Int] = {
 		def bsf(list: Seq[A], target: A, start: Int, end: Int): Option[Int] = {
 			if (start > end) {
 				None

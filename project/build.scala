@@ -62,7 +62,8 @@ object Resolvers {
 
   val oracleResolvers    = Seq(sunRepo, sunRepoGF, oracleRepo)
   
-  val typesafeRepo   = "Akka Repo" at "http://repo.typesafe.com/typesafe/releases/"
+  lazy val sprayIoReleases       = "Spray IO Release Repo" at "http://repo.spray.io"
+  lazy val typesafeResolvers     = Seq(sprayIoReleases) ++ Seq("snapshots", "releases").map(Resolver.typesafeRepo) ++Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
   val springReleaseRepo           = "EBR Spring Release Repository" at "http://repository.springsource.com/maven/bundles/release"
   val springExternalReleaseRepo   = "EBR Spring External Release Repository" at "http://repository.springsource.com/maven/bundles/external"
@@ -72,7 +73,7 @@ object Resolvers {
 
   val springResolvers    = Seq(springReleaseRepo, springExternalReleaseRepo)
 
-  val allResolvers = Seq(typesafeRepo, jBossRepo) ++ oracleResolvers ++ springResolvers
+  val allResolvers = typesafeResolvers ++ Seq(jBossRepo) ++ oracleResolvers ++ springResolvers
 }
 
 object Versions {
@@ -80,7 +81,15 @@ object Versions {
   lazy val scalaVersion       = BuildSettings.buildScalaVersion
   lazy val twitterUtilVersion = "6.12.1"
   lazy val slf4jVersion       = "1.6.4"
+  lazy val logbackVersion     = "1.0.7"
+  lazy val configVersion      = "1.2.1"
+  lazy val scalazVersion      = "7.0.6"
+    
+  lazy val junitVersion       = "4.11"
+  lazy val mockitoVersion     = "1.9.5"
   lazy val scalaTestVersion   = "2.0"
+  lazy val specs2Version      = "2.3.13"
+  lazy val scalaCheckVersion  = "1.11.3"
 }
 
 
@@ -91,10 +100,11 @@ object Dependencies {
   lazy val test     = "test"
   lazy val runtime  = "runtime"
 
-  lazy val junit      = "junit"          %  "junit"        %  "4.10"           % test
-  lazy val mockito    = "org.mockito"    %  "mockito-core" %  "1.9.5"          % test
-  lazy val scalaTest  = "org.scalatest"  %% "scalatest"    %  scalaTestVersion % test
-  lazy val scalaCheck = "org.scalacheck" %% "scalacheck"   %  "1.10.1"         % test
+  lazy val junit      = "junit"          %  "junit"        %  junitVersion      % test
+  lazy val mockito    = "org.mockito"    %  "mockito-core" %  mockitoVersion    % test
+  lazy val scalaTest  = "org.scalatest"  %% "scalatest"    %  scalaTestVersion  % test
+  lazy val specs2     = "org.specs2"     %% "specs2"       %  specs2Version     % test
+  lazy val scalaCheck = "org.scalacheck" %% "scalacheck"   %  scalaCheckVersion % test
   lazy val testDependencies = Seq(junit, scalaTest, scalaCheck, mockito)
 
   lazy val twitterOrg            = "com.twitter"
@@ -118,18 +128,21 @@ object Dependencies {
   lazy val commonsIO             = "commons-io"  % "commons-io"              % "2.4"
   lazy val apacheCommonsDependencies = Seq(commonsIO)
 
-  lazy val slf4j       = "org.slf4j" % "slf4j-api"      % slf4jVersion
-  lazy val slf4jSimple = "org.slf4j" % "slf4j-simple "  % slf4jVersion
-  lazy val slf4jlog4j  = "org.slf4j" % "slf4j-log4j12"  % slf4jVersion
-  lazy val slf4jDependencies       = Seq(slf4j, slf4jlog4j)
+  lazy val slf4j_api      = "org.slf4j"      % "slf4j-api"       % slf4jVersion
+  lazy val slf4j_simple   = "org.slf4j"      % "slf4j-simple"    % slf4jVersion
+  lazy val slf4j_log4j    = "org.slf4j"      % "slf4j-log4j12"   % slf4jVersion
+  lazy val logbackClassic = "ch.qos.logback" % "logback-classic" % logbackVersion
+  lazy val logbackCore    = "ch.qos.logback" % "logback-core"    % logbackVersion
+  lazy val logbackAccess  = "ch.qos.logback" % "logback-access"  % logbackVersion
+  lazy val slf4jDependencies = Seq(slf4j_api, slf4j_log4j)
   
-  lazy val scalazFull     = "org.scalaz"             %% "scalaz-full"  %  "6.0.4"
-  lazy val typesafeConfig = "com.typesafe"           %  "config"       %  "1.2.1"
+  lazy val scalazCore     = "org.scalaz"             %% "scalaz-core"  %  scalazVersion
+  lazy val typesafeConfig = "com.typesafe"           %  "config"       %  configVersion
   lazy val rxScala        = "com.netflix.rxjava"     %  "rxjava-scala" %  "0.15.0"
   lazy val scalaAsync     = "org.scala-lang.modules" %% "scala-async"  %  "0.9.0-M2"
   lazy val scalaSwing     = "org.scala-lang"         %  "scala-swing"  %  scalaVersion
 
-  lazy val stdlibDependencies      = Seq(scalaSwing, typesafeConfig, rxScala, scalaAsync) ++ testDependencies ++ slf4jDependencies ++ apacheCommonsDependencies
+  lazy val stdlibDependencies      = Seq(scalaSwing, typesafeConfig, scalazCore, rxScala, scalaAsync) ++ testDependencies ++ slf4jDependencies ++ apacheCommonsDependencies
   lazy val fundamentalDependencies = stdlibDependencies
   lazy val sortingDependencies     = stdlibDependencies
   lazy val searchingDependencies   = stdlibDependencies
