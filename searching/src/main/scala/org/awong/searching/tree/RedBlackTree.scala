@@ -1,4 +1,4 @@
-package org.awong.searching
+package org.awong.searching.tree
 
 /**
  * This file was part of Scalacaster project, https://github.com/vkostyukov/scalacaster
@@ -77,9 +77,9 @@ abstract sealed class RedBlackTree[+A <% Ordered[A]] {
 	def color: Color
 
 	/**
-	 * The value of this tree.
+	 * The key of this tree.
 	 */
-	def value: A
+	def key: A
 
 	/**
 	 * The left child of this tree.
@@ -107,8 +107,8 @@ abstract sealed class RedBlackTree[+A <% Ordered[A]] {
 	def add[B >: A <% Ordered[B]](x: B): RedBlackTree[B] = {
 		def balancedAdd(t: RedBlackTree[A]): RedBlackTree[B] =
 			if (t.isEmpty) RedBlackTree.make(Red, x)
-			else if (x < t.value) balanceLeft(t.color, t.value, balancedAdd(t.left), t.right)
-			else if (x > t.value) balanceRight(t.color, t.value, t.left, balancedAdd(t.right))
+			else if (x < t.key) balanceLeft(t.color, t.key, balancedAdd(t.left), t.right)
+			else if (x > t.key) balanceRight(t.color, t.key, t.left, balancedAdd(t.right))
 			else t
 
 		def balanceLeft(c: Color, x: A, l: RedBlackTree[B], r: RedBlackTree[A]) = (c, l, r) match {
@@ -127,7 +127,7 @@ abstract sealed class RedBlackTree[+A <% Ordered[A]] {
 			case _ => RedBlackTree.make(c, x, l, r)
 		}
 
-		def blacken(t: RedBlackTree[B]) = RedBlackTree.make(Black, t.value, t.left, t.right)
+		def blacken(t: RedBlackTree[B]) = RedBlackTree.make(Black, t.key, t.left, t.right)
 
 		blacken(balancedAdd(this))
 	}
@@ -143,7 +143,7 @@ abstract sealed class RedBlackTree[+A <% Ordered[A]] {
 }
 
 case class RBBranch[A <% Ordered[A]](color: Color,
-			value: A, 
+			key: A, 
 			left: RedBlackTree[A], 
 			right: RedBlackTree[A]) extends RedBlackTree[A] {
 	def isEmpty = false
@@ -151,7 +151,7 @@ case class RBBranch[A <% Ordered[A]](color: Color,
 
 case object RBLeaf extends RedBlackTree[Nothing] {
 	def color: Color = Black
-	def value: Nothing = fail("An empty tree.")
+	def key: Nothing = fail("An empty tree.")
 	def left: RedBlackTree[Nothing] = fail("An empty tree.")
 	def right: RedBlackTree[Nothing] = fail("An empty tree.")
 	def isEmpty = true
