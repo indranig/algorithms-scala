@@ -19,8 +19,8 @@ import scala.collection.immutable.Queue
  * The main idea here - is use additional node field that stores size of tree rooted
  * at this node. This allows to get the size of tree in O(1) instead of linear time.
  */
-abstract sealed class BinaryTree[+A <% Ordered[A]] {
-
+abstract sealed class BinarySearchTree[+A <% Ordered[A]] {
+	type BST[A] = BinarySearchTree[A]
 	/**
 	 * The value of this tree.
 	 */
@@ -29,12 +29,12 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	/**
 	 * The left child of this tree.
 	 */
-	def left: BinaryTree[A]
+	def left: BST[A]
 
 	/**
 	 * The right child of this tree.
 	 */
-	def right: BinaryTree[A]
+	def right: BST[A]
 
 	/**
 	 * The size of this tree.
@@ -66,7 +66,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def isBalanced: Boolean = {
-		def loop(t: BinaryTree[A]): Int = 
+		def loop(t: BST[A]): Int = 
 			if (t.isEmpty) 0
 			else {
 				val l = loop(t.left)
@@ -88,10 +88,10 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Time - O(log n)
 	 * Space - O(log n)
 	 */
-	def add[B >: A <% Ordered[B]](x: B): BinaryTree[B] =
-		if (isEmpty) BinaryTree.make(x)
-		else if (x < key) BinaryTree.make(key, left.add(x), right)
-		else if (x > key) BinaryTree.make(key, left, right.add(x))
+	def add[B >: A <% Ordered[B]](x: B): BST[B] =
+		if (isEmpty) BinarySearchTree.make(x)
+		else if (x < key) BinarySearchTree.make(key, left.add(x), right)
+		else if (x > key) BinarySearchTree.make(key, left, right.add(x))
 		else this
 
 	/**
@@ -100,17 +100,17 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Time - O(log n)
 	 * Space - O(log n)
 	 */
-	def remove[B >: A <% Ordered[B]](x: B): BinaryTree[B] =
+	def remove[B >: A <% Ordered[B]](x: B): BST[B] =
 		if (isEmpty) fail("Can't find " + x + " in this tree.")
-		else if (x < key) BinaryTree.make(key, left.remove(x), right)
-		else if (x > key) BinaryTree.make(key, left, right.remove(x))
+		else if (x < key) BinarySearchTree.make(key, left.remove(x), right)
+		else if (x > key) BinarySearchTree.make(key, left, right.remove(x))
 		else {
-			if (left.isEmpty && right.isEmpty) BinaryTree.empty
+			if (left.isEmpty && right.isEmpty) BinarySearchTree.empty
 			else if (left.isEmpty) right
 			else if (right.isEmpty) left
 			else {
 				val succ = right.min
-				BinaryTree.make(succ, left, right.remove(succ))
+				BinarySearchTree.make(succ, left, right.remove(succ))
 			}
 		}
 
@@ -127,7 +127,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def contains[B >: A <% Ordered[B]](searchKey: B): Boolean = {
-		def loop(current: BinaryTree[A], c: Option[A]): Boolean = 
+		def loop(current: BST[A], c: Option[A]): Boolean = 
 			if (current.isEmpty) false
 			else {
 				if (searchKey < current.key) loop(current.left, Some(current.key))
@@ -149,7 +149,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Time - O(log n)
 	 * Space - O(log n)
 	 */
-	def subtree[B >: A <% Ordered[B]](x: B): BinaryTree[B] =
+	def subtree[B >: A <% Ordered[B]](x: B): BST[B] =
 		if (isEmpty) fail("Can't find " + x + " in this tree.")
 		else if (x < key) left.subtree(x)
 		else if (x > key) right.subtree(x)
@@ -172,8 +172,8 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Time - O(n log n)
 	 * Space - O(log n)
 	 */
-	def isSubtree[B >: A <% Ordered[B]](t: BinaryTree[B]): Boolean = {
-		def loop(a: BinaryTree[B], b: BinaryTree[B]): Boolean = 
+	def isSubtree[B >: A <% Ordered[B]](t: BST[B]): Boolean = {
+		def loop(a: BST[B], b: BST[B]): Boolean = 
 			if (a.isEmpty && b.isEmpty) true
 			else if (a.isEmpty || b.isEmpty) false
 			else a.key == b.key && loop(a.left, b.left) && loop(a.right, b.right)
@@ -195,8 +195,8 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Time - O(n log n)
 	 * Space - O(log n)
 	 */
-	def merge[B >: A <% Ordered[B]](t: BinaryTree[B]): BinaryTree[B] = {
-		def loop(s: BinaryTree[B], d: BinaryTree[B]): BinaryTree[B] = 
+	def merge[B >: A <% Ordered[B]](t: BST[B]): BST[B] = {
+		def loop(s: BST[B], d: BST[B]): BST[B] = 
 			if (s.isEmpty) d
 			else loop(s.right, loop(s.left, d.add(s.key)))
 
@@ -223,7 +223,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def fold[B](n: B)(op: (B, A) => B): B = {
-		def loop(t: BinaryTree[A], a: B): B =
+		def loop(t: BST[A], a: B): B =
 			if (t.isEmpty) a
 			else loop(t.right, op(loop(t.left, a), t.key))
 
@@ -236,9 +236,9 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Time - O(n)
 	 * Space - O(log n)
 	 */
-	def map[B <% Ordered[B]](f: (A) => B): BinaryTree[B] = 
-		if (isEmpty) BinaryTree.empty
-		else BinaryTree.make(f(key), left.map(f), right.map(f))
+	def map[B <% Ordered[B]](f: (A) => B): BST[B] = 
+		if (isEmpty) BinarySearchTree.empty
+		else BinarySearchTree.make(f(key), left.map(f), right.map(f))
 
 	/**
 	 * Inverts the sign of all the values in this tree.
@@ -247,9 +247,9 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Time - O(n)
 	 * Space - O(log n)
 	 */
-	def invert[B >: A](implicit num: Numeric[B]): BinaryTree[B] =
-		if (isEmpty) BinaryTree.empty
-		else BinaryTree.make(num.negate(key), right.invert(num), left.invert(num))
+	def invert[B >: A](implicit num: Numeric[B]): BST[B] =
+		if (isEmpty) BinarySearchTree.empty
+		else BinarySearchTree.make(num.negate(key), right.invert(num), left.invert(num))
 
 	/**
 	 * Calculates the sum of all elements of this tree.
@@ -274,7 +274,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def min: A = {
-		def loop(t: BinaryTree[A], m: A): A = 
+		def loop(t: BST[A], m: A): A = 
 			if (t.isEmpty) m
 			else loop(t.left, t.key)
 
@@ -289,7 +289,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def max: A = {
-		def loop(t: BinaryTree[A], m: A): A = 
+		def loop(t: BST[A], m: A): A = 
 			if (t.isEmpty) m
 			else loop(t.right, t.key)
 
@@ -326,14 +326,14 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def successor[B >: A <% Ordered[B]](x: B): A = {
-		def forward(t: BinaryTree[A], p: List[BinaryTree[A]]): A =
+		def forward(t: BST[A], p: List[BST[A]]): A =
 			if (t.isEmpty) fail("Can't find " + x + " in this tree.")
 			else if (x < t.key) forward(t.left, t :: p)
 			else if (x > t.key) forward(t.right, t :: p)
 			else if (!t.right.isEmpty) t.right.min
 			else backward(t, p)
 
-		def backward(t: BinaryTree[A], p: List[BinaryTree[A]]): A = 
+		def backward(t: BST[A], p: List[BST[A]]): A = 
 			if (p.isEmpty) fail("The " + x + " doesn't have an successor.")
 			else if (t == p.head.right) backward(p.head, p.tail)
 			else p.head.key
@@ -348,14 +348,14 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def predecessor[B >: A <% Ordered[B]](x: B): A = {
-		def forward(t: BinaryTree[A], p: List[BinaryTree[A]]): A =
+		def forward(t: BST[A], p: List[BST[A]]): A =
 			if (t.isEmpty) fail("Can't find " + x + " in this tree.")
 			else if (x < t.key) forward(t.left, t :: p)
 			else if (x > t.key) forward(t.right, t :: p)
 			else if (!t.left.isEmpty) t.left.max
 			else backward(t, p)
 
-		def backward(t: BinaryTree[A], p: List[BinaryTree[A]]): A = 
+		def backward(t: BST[A], p: List[BST[A]]): A = 
 			if (p.isEmpty) fail("The " + x + " doesn't have an predecessor.")
 			else if (t == p.head.left) backward(p.head, p.tail)
 			else p.head.key
@@ -370,7 +370,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def ancestor[B >: A <% Ordered[B]](x: B, y: B): A = {
-		def loop(t: BinaryTree[A]): A = 
+		def loop(t: BST[A]): A = 
 			if (x < t.key && y < t.key) loop(t.left)
 			else if (x > t.key && y > t.key) loop(t.right)
 			else t.key
@@ -431,7 +431,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Time - O(log n)
 	 * Space - O(log n)
 	 */
-	def path[B >: A <% Ordered[B]](x: B): List[BinaryTree[A]] = 
+	def path[B >: A <% Ordered[B]](x: B): List[BST[A]] = 
 		if (isEmpty) fail("Can't find " + x + " in this tree.")
 		else if (x < key) this :: left.path(x)
 		else if (x > key) this :: right.path(x)
@@ -474,7 +474,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def takeLargest(n: Int): List[A] = {
-		def loop(t: BinaryTree[A], l: List[A]): List[A] = 
+		def loop(t: BST[A], l: List[A]): List[A] = 
 			if (t.isEmpty || l.size == n) l
 			else {
 				val ll = loop(t.right, l)
@@ -494,7 +494,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def takeSmallest(n: Int): List[A] = {
-		def loop(t: BinaryTree[A], l: List[A]): List[A] = 
+		def loop(t: BST[A], l: List[A]): List[A] = 
 			if (t.isEmpty || l.size == n) l
 			else {
 				val ll = loop(t.left, l)
@@ -512,7 +512,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def diameter: List[A] = {
-		def build(t: BinaryTree[A], p: List[A]): List[A] = 
+		def build(t: BST[A], p: List[A]): List[A] = 
 			if (t.isEmpty) p
 			else if (t.left.height > t.right.height) build(t.left, t.key :: p)
 			else build(t.right, t.key :: p)
@@ -560,7 +560,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def toList: List[A] = {
-		def loop(t: BinaryTree[A], l: List[A]): List[A] = 
+		def loop(t: BST[A], l: List[A]): List[A] = 
 			if (t.isEmpty) l
 			else loop(t.left, t.key :: loop(t.right, l))
 
@@ -574,7 +574,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def valuesByDepth: List[A] = {
-		def loop(s: List[BinaryTree[A]]): List[A] = 
+		def loop(s: List[BST[A]]): List[A] = 
 			if (s.isEmpty) Nil
 			else if (s.head.isEmpty) loop(s.tail)
 			else s.head.key :: loop(s.head.right :: s.head.left :: s.tail)
@@ -590,7 +590,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 */
 	def valuesByBreadth: List[A] = {
 		import scala.collection.immutable.Queue
-		def loop(q: Queue[BinaryTree[A]]): List[A] = 
+		def loop(q: Queue[BST[A]]): List[A] = 
 			if (q.isEmpty) Nil
 			else if (q.head.isEmpty) loop(q.tail)
 			else q.head.key :: loop(q.tail :+ q.head.left :+ q.head.right)
@@ -607,13 +607,13 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def valuesByZigZag: List[A] = {
-		def zig(ltr: List[BinaryTree[A]], rtl: List[BinaryTree[A]]): List[A] = 
+		def zig(ltr: List[BST[A]], rtl: List[BST[A]]): List[A] = 
 			if (ltr.isEmpty && rtl.isEmpty) Nil
 			else if (ltr.isEmpty) zag(ltr, rtl)
 			else if (ltr.head.isEmpty) zig(ltr.tail, rtl)
 			else ltr.head.key :: zig(ltr.tail, ltr.head.left :: ltr.head.right :: rtl)
 
-		def zag(ltr: List[BinaryTree[A]], rtl: List[BinaryTree[A]]): List[A] = 
+		def zag(ltr: List[BST[A]], rtl: List[BST[A]]): List[A] = 
 			if (ltr.isEmpty && rtl.isEmpty) Nil
 			else if (rtl.isEmpty) zig(ltr, rtl)
 			else if (rtl.head.isEmpty) zag(ltr, rtl.tail)
@@ -629,7 +629,7 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	 * Space - O(log n)
 	 */
 	def rootToLeafPathsWithSum[B >: A](sum: B)(implicit num: Numeric[B]): List[List[B]] = {
-		def loop(t: BinaryTree[A], p: List[B]): List[List[B]] = 
+		def loop(t: BST[A], p: List[B]): List[List[B]] = 
 			if (t.isEmpty)
 				if (p.sum == sum) List(p) else Nil
 			else loop(t.left, t.key :: p) ::: loop(t.right, t.key :: p)
@@ -643,28 +643,28 @@ abstract sealed class BinaryTree[+A <% Ordered[A]] {
 	def fail(m: String) = throw new NoSuchElementException(m)
 }
 
-case object Leaf extends BinaryTree[Nothing] {
+case object Leaf extends BinarySearchTree[Nothing] {
 	def key: Nothing = fail("An empty tree.")
-	def left: BinaryTree[Nothing] = fail("An empty tree.")
-	def right: BinaryTree[Nothing] = fail("An empty tree.")
+	def left: BinarySearchTree[Nothing] = fail("An empty tree.")
+	def right: BinarySearchTree[Nothing] = fail("An empty tree.")
 	def size: Int = 0
 
 	def isEmpty: Boolean = true
 }
 
 case class Branch[A <% Ordered[A]](key: A,
-				left: BinaryTree[A],
-				right: BinaryTree[A],
-				size: Int) extends BinaryTree[A] {
+				left: BinarySearchTree[A],
+				right: BinarySearchTree[A],
+				size: Int) extends BinarySearchTree[A] {
 	def isEmpty: Boolean = false
 }
 
-object BinaryTree {
+object BinarySearchTree {
 
 	/**
 	 * An empty tree.
 	 */
-	def empty[A]: BinaryTree[A] = Leaf
+	def empty[A]: BinarySearchTree[A] = Leaf
 
 	/**
 	 * A smart constructor for tree's branch.
@@ -672,7 +672,7 @@ object BinaryTree {
 	 * Time - O(1)
 	 * Space - O(1)
 	 */
-	def make[A <% Ordered[A]](x: A, l: BinaryTree[A] = Leaf, r: BinaryTree[A] = Leaf): BinaryTree[A] =
+	def make[A <% Ordered[A]](x: A, l: BinarySearchTree[A] = Leaf, r: BinarySearchTree[A] = Leaf): BinarySearchTree[A] =
 		Branch(x, l, r, l.size + r.size + 1)
 
 	/**
@@ -681,8 +681,8 @@ object BinaryTree {
 	 * Time - O(n log n)
 	 * Space - O(log n)
 	 */
-	def apply[A <% Ordered[A]](xs: Iterable[A]): BinaryTree[A] = {
-		var r: BinaryTree[A] = BinaryTree.empty
+	def apply[A <% Ordered[A]](xs: Iterable[A]): BinarySearchTree[A] = {
+		var r: BinarySearchTree[A] = BinarySearchTree.empty
 		for (x <- xs) r = r.add(x)
 		r
 	}
@@ -697,11 +697,11 @@ object BinaryTree {
 	 * Time - O(log n)
 	 * Space - O(log n)
 	 */
-	def complete[A <% Ordered[A]](x: A, d: Int): BinaryTree[A] =
-		if (d == 0) BinaryTree.make(x)
+	def complete[A <% Ordered[A]](x: A, d: Int): BinarySearchTree[A] =
+		if (d == 0) BinarySearchTree.make(x)
 		else {
-			val t = BinaryTree.complete(x, d - 1)
-			BinaryTree.make(x, t, t)
+			val t = BinarySearchTree.complete(x, d - 1)
+			BinarySearchTree.make(x, t, t)
 		}
 
 	/**
@@ -718,15 +718,15 @@ object BinaryTree {
 	 * Time - O(log n)
 	 * Space - O(log n)
 	 */
-	def balanced[A <% Ordered[A]](x: A, s: Int): BinaryTree[A] = {
-		def pair(ss: Int): (BinaryTree[A], BinaryTree[A]) =
-			if (ss <= 0) (BinaryTree.empty, BinaryTree.empty)
+	def balanced[A <% Ordered[A]](x: A, s: Int): BinarySearchTree[A] = {
+		def pair(ss: Int): (BinarySearchTree[A], BinarySearchTree[A]) =
+			if (ss <= 0) (BinarySearchTree.empty, BinarySearchTree.empty)
 			else {
 				val t = balanced(x, ss - 1)
-				(t, t.add(x)) 
+				(t, t.add(x))
 			}
 
 		val (lt, rt) = pair(s / 2) 
-		BinaryTree.make(x, lt, rt)
+		BinarySearchTree.make(x, lt, rt)
 	}
 }
