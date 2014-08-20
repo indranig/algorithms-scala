@@ -7,7 +7,7 @@ package org.awong.searching.tree
  * Red-Black Tree http://en.wikipedia.org/wiki/Red-black_tree
  *
  * Insert - O(log n)
- * Lookup - O(log n)	
+ * Lookup - O(log n)
  * Remove - O(log n)
  *
  * -Notes-
@@ -69,17 +69,12 @@ case object Black extends Color
 /**
  * A Red-Black Tree.
  */
-abstract sealed class RedBlackTree[+A <% Ordered[A]] {
+abstract sealed class RedBlackTree[+A <% Ordered[A]] extends Tree[A] {
 
 	/**
 	 * The color of this tree.
 	 */
 	def color: Color
-
-	/**
-	 * The key of this tree.
-	 */
-	def key: A
 
 	/**
 	 * The left child of this tree.
@@ -106,46 +101,73 @@ abstract sealed class RedBlackTree[+A <% Ordered[A]] {
 	 */
 	def add[B >: A <% Ordered[B]](x: B): RedBlackTree[B] = {
 		def balancedAdd(t: RedBlackTree[A]): RedBlackTree[B] =
-			if (t.isEmpty) RedBlackTree.make(Red, x)
-			else if (x < t.key) balanceLeft(t.color, t.key, balancedAdd(t.left), t.right)
-			else if (x > t.key) balanceRight(t.color, t.key, t.left, balancedAdd(t.right))
-			else t
+			if (t.isEmpty) {
+				RedBlackTree.make(Red, x)
+			} else if (x < t.key) {
+				balanceLeft(t.color, t.key, balancedAdd(t.left), t.right)
+			} else if (x > t.key) {
+				balanceRight(t.color, t.key, t.left, balancedAdd(t.right))
+			} else {
+				t
+			}
 
 		def balanceLeft(c: Color, x: A, l: RedBlackTree[B], r: RedBlackTree[A]) = (c, l, r) match {
-			case (Black, RBBranch(Red, y, RBBranch(Red, z, a, b), c), d) => 
+			case (Black, RBBranch(Red, y, RBBranch(Red, z, a, b, _), c, _), d) => {
 				RedBlackTree.make(Red, y, RedBlackTree.make(Black, z, a, b), RedBlackTree.make(Black, x, c, d))
-			case (Black, RBBranch(Red, z, a, RBBranch(Red, y, b, c)), d) => 
+			}
+			case (Black, RBBranch(Red, z, a, RBBranch(Red, y, b, c, _), _), d) => {
 				RedBlackTree.make(Red, y, RedBlackTree.make(Black, z, a, b), RedBlackTree.make(Black, x, c, d))
-			case _ => RedBlackTree.make(c, x, l, r)
+			}
+			case _ => {
+				RedBlackTree.make(c, x, l, r)
+			}
 		}
 
 		def balanceRight(c: Color, x: A, l: RedBlackTree[A], r: RedBlackTree[B]) = (c, l, r) match {
-			case (Black, a, RBBranch(Red, y, b, RBBranch(Red, z, c, d))) =>
+			case (Black, a, RBBranch(Red, y, b, RBBranch(Red, z, c, d, _), _ )) => {
 				RedBlackTree.make(Red, y, RedBlackTree.make(Black, x, a, b), RedBlackTree.make(Black, z, c, d))
-			case (Black, a, RBBranch(Red, z, RBBranch(Red, y, b, c), d)) => 
+			}
+			case (Black, a, RBBranch(Red, z, RBBranch(Red, y, b, c, _ ), d, _)) => {
 				RedBlackTree.make(Red, y, RedBlackTree.make(Black, x, a, b), RedBlackTree.make(Black, z, c, d))
-			case _ => RedBlackTree.make(c, x, l, r)
+			}
+			case _ => {
+				RedBlackTree.make(c, x, l, r)
+			}
 		}
 
-		def blacken(t: RedBlackTree[B]) = RedBlackTree.make(Black, t.key, t.left, t.right)
+		def blacken(t: RedBlackTree[B]) = {
+			RedBlackTree.make(Black, t.key, t.left, t.right)
+		}
 
 		blacken(balancedAdd(this))
 	}
 
-	def height: Int =
-		if (isEmpty) 0
-		else math.max(left.height, right.height) + 1
-
-	/**
-	 * Fails with given message.
-	 */
-	def fail(m: String) = throw new NoSuchElementException(m)
+	def remove[B >: A <% Ordered[B]](x: B): RedBlackTree[B] = {
+		???
+	}
+	
+	def map[B <% Ordered[B]](f: (A) => B): RedBlackTree[B] = {
+		if (isEmpty) RedBlackTree.empty
+		else RedBlackTree.make(color, f(key), left.map(f), right.map(f))
+	}
+	
+	def flatMap[B <% Ordered[B]](f: (A) => Tree[B]): RedBlackTree[B] = {
+		if (isEmpty) RedBlackTree.empty
+		else ???
+	}
+	
+	def invert[B >: A](implicit num: Numeric[B]): RedBlackTree[B] = {
+		if (isEmpty) RedBlackTree.empty
+		else RedBlackTree.make(color, num.negate(key), right.invert(num), left.invert(num))
+	}
 }
+
 
 case class RBBranch[A <% Ordered[A]](color: Color,
 			key: A, 
 			left: RedBlackTree[A], 
-			right: RedBlackTree[A]) extends RedBlackTree[A] {
+			right: RedBlackTree[A],
+			size: Int) extends RedBlackTree[A] {
 	def isEmpty = false
 }
 
@@ -155,6 +177,7 @@ case object RBLeaf extends RedBlackTree[Nothing] {
 	def left: RedBlackTree[Nothing] = fail("An empty tree.")
 	def right: RedBlackTree[Nothing] = fail("An empty tree.")
 	def isEmpty = true
+	def size = 0
 }
 
 object RedBlackTree {
@@ -170,8 +193,9 @@ object RedBlackTree {
 	/**
 	 *
 	 */
-	def make[A <% Ordered[A]](c: Color, x: A, l: RedBlackTree[A] = RBLeaf, r: RedBlackTree[A] = RBLeaf): RedBlackTree[A] =
-		RBBranch(c, x, l, r)
+	def make[A <% Ordered[A]](c: Color, x: A, l: RedBlackTree[A] = RBLeaf, r: RedBlackTree[A] = RBLeaf): RedBlackTree[A] = {
+		RBBranch(c, x, l, r, l.size + r.size + 1)
+	}
 
 	/**
 	 * Creates a new red-black tree from given 'xs' sequence.

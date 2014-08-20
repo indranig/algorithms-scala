@@ -1,14 +1,12 @@
 package org.awong.searching.tree
 
-
 import org.awong.AbstractWordSpec
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class BinaryTreeSpec extends AbstractWordSpec {
-
-	"A binary tree" should {
+class RedBlackTreeSpec extends AbstractWordSpec {
+	"A red-black tree tree" should {
 		"be able to create a 0-node empty tree" in {
 			val tree = BinarySearchTree.empty
 			tree.isEmpty should be (true)
