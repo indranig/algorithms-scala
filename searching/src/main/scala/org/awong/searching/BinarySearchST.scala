@@ -104,6 +104,14 @@ class BinarySearchST[Key <: Ordered[Key], Value] extends OrderedSymbolTable[Key,
 		val hiRank = rank(high)
 		orderedKeys.slice(lowRank, hiRank)
 	}
+	
+	def successor[K1 >: Key <% Ordered[K1]](key: K1): Key = {
+		???
+	}
+
+	def predecessor[K1 >: Key <% Ordered[K1]](key: K1): Key = {
+		???
+	}
 
 }
 

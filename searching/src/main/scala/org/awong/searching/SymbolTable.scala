@@ -51,7 +51,7 @@ trait OrderedSymbolTable[Key <: Ordered[Key], Value] extends SymbolTable[Key,Val
 	/**
 	 * delete the smallest key
 	 */
-	def deleteMin: Unit = {
+	def deleteMin(): Unit = {
 		min() match {
 			case Some(m) => delete(m)
 			case _ =>
@@ -60,12 +60,22 @@ trait OrderedSymbolTable[Key <: Ordered[Key], Value] extends SymbolTable[Key,Val
 	/**
 	 * delete the greatest key
 	 */
-	def deleteMax: Unit = {
+	def deleteMax(): Unit = {
 		max() match {
 			case Some(m) => delete(m)
 			case _ =>
 		}
 	}
+	/**
+	 * Searches for the successor of given 'key'.
+	 *
+	 */
+	def successor[K1 >: Key <% Ordered[K1]](key: K1): Key
+	/**
+	 * Searches for the successor of given 'key'.
+	 */
+	def predecessor[K1 >: Key <% Ordered[K1]](key: K1): Key
+	
 	/**
 	 * number of keys from [lo ... high]
 	 */

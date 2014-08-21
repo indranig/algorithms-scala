@@ -12,6 +12,15 @@ class ImperativeRBTree[Key <: Ordered[Key], Value] extends OrderedSymbolTable[Ke
 	override def delete(key: Key): Unit = {
 		???
 	}
+	
+	def successor[K1 >: Key <% Ordered[K1]](key: K1): Key = {
+		???
+	}
+
+	def predecessor[K1 >: Key <% Ordered[K1]](key: K1): Key = {
+		???
+	}
+	
 	override def contains(key: Key): Boolean = {
 		???
 	}
