@@ -64,24 +64,39 @@ class BinarySearchST[Key <: Ordered[Key], Value] extends OrderedSymbolTable[Key,
 		???
 	}
 	
-	def min(): Key = {
-		orderedKeys(0)
+	def min(): Option[Key] = {
+		if (orderedKeys.isEmpty) {
+			None
+		} else {
+			Some(orderedKeys(0))
+		}
 	}
-	def max(): Key = {
-		orderedKeys(size() - 1)
+	def max(): Option[Key] = {
+		if (orderedKeys.isEmpty) {
+			None
+		} else {
+			Some(orderedKeys(size() - 1))
+		}
 	}
 	
-	def floor(key: Key): Key = {
+	def floor(key: Key): Option[Key] = {
 		???
 	}
 
-	def ceiling(key: Key): Key = {
-		val i = rank(key)
-		orderedKeys(i)
+	def ceiling(key: Key): Option[Key] = {
+		if (orderedKeys.isEmpty) {
+			None
+		} else {
+			Some(orderedKeys(rank(key)))
+		}
 	}
 
-	def select(rank: Int): Key = {
-		orderedKeys(rank)
+	def select(rank: Int): Option[Key] = {
+		if (orderedKeys.isEmpty) {
+			None
+		} else {
+			Some(orderedKeys(rank))
+		}
 	}
 	
 	def keys(low: Key, high: Key): Iterable[Key] = {

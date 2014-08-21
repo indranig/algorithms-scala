@@ -27,19 +27,19 @@ trait OrderedSymbolTable[Key <: Ordered[Key], Value] extends SymbolTable[Key,Val
 	/**
 	 * smallest key
 	 */
-	def min(): Key
+	def min(): Option[Key]
 	/**
 	 * largest key
 	 */
-	def max(): Key
+	def max(): Option[Key]
 	/**
 	 * largest key less than or equal to given key
 	 */
-	def floor(key: Key): Key
+	def floor(key: Key): Option[Key]
 	/**
 	 * smallest key greater than or equal to given key
 	 */
-	def ceiling(key: Key): Key
+	def ceiling(key: Key): Option[Key]
 	/**
 	 * number of keys less than given key
 	 */
@@ -47,18 +47,24 @@ trait OrderedSymbolTable[Key <: Ordered[Key], Value] extends SymbolTable[Key,Val
 	/**
 	 * the key given the rank
 	 */
-	def select(rank: Int): Key
+	def select(rank: Int): Option[Key]
 	/**
 	 * delete the smallest key
 	 */
 	def deleteMin: Unit = {
-		delete(min())
+		min() match {
+			case Some(m) => delete(m)
+			case _ =>
+		}
 	}
 	/**
 	 * delete the greatest key
 	 */
 	def deleteMax: Unit = {
-		delete(max())
+		max() match {
+			case Some(m) => delete(m)
+			case _ =>
+		}
 	}
 	/**
 	 * number of keys from [lo ... high]
@@ -79,7 +85,12 @@ trait OrderedSymbolTable[Key <: Ordered[Key], Value] extends SymbolTable[Key,Val
 	def keys(low: Key, high: Key): Iterable[Key]
 	
 	override def keys(): Iterable[Key] = {
-		keys(min(), max())
+		(min(), max()) match {
+			case (None, None) => Seq[Key]()
+			case (None, Some(m)) => Seq[Key](m)
+			case (Some(m), None) => Seq[Key](m)
+			case (Some(aMin), Some(aMax)) => keys(aMin, aMax)
+		}
 	}
 }
 
