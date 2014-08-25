@@ -52,8 +52,9 @@ class SequentialSearchST[Key,Value] extends SymbolTable[Key,Value] {
 			list = filter(list, Nil){ _.key != key }
 		}
 	}
-	
 
 }
 
-object SequentialSearchST
+object SequentialSearchST {
+	def apply[Key,Value](): SequentialSearchST[Key,Value] =  new SequentialSearchST[Key,Value]()
+}
