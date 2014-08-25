@@ -4,42 +4,53 @@ package org.awong.searching
  * This essentially uses an inefficient linked list
  */
 class SequentialSearchST[Key,Value] extends SymbolTable[Key,Value] {
-	case class Node(key: Key, var value: Value, next: Option[Node])
+	case class Node(key: Key, var value: Value)
 	
-	var first: Node = _
+	var list: List[Node] = Nil
 	
-	private def getImpl(key: Key, current: Node): Option[Node] = {
-		if (key.equals(current.key)) {
-			Some(current)
-		} else {
-			current.next match {
-				case Some(nextNode) => getImpl(key, nextNode)
-				case None => None
-			}
+	private def find(remainder: List[Node])(p: Node => Boolean): Option[Node] = {
+		remainder match {
+			case head::tail if p(head) => Some(head)
+			case head::tail if !p(head) => find(tail)(p)
+			case Nil => None
+		}
+	}
+	
+	private def findFirst(key: Key, list: List[Node]): Option[Node] = {
+		find(list){ _.key == key }
+	}
+	
+	private def filter(remainder: List[Node], result: List[Node])(p: Node => Boolean): List[Node] = {
+		remainder match {
+			case head::tail if p(head) => head::result
+			case head::tail if !p(head) => filter(tail, result)(p)
+			case Nil => result
 		}
 	}
 	
 	def get(key: Key): Option[Value] = {
-		for (n <- getImpl(key, first)) yield n.value
+		for (n <- findFirst(key, list)) yield n.value
 	}
 	
 	def put(key: Key, value: Value): Unit = {
-		getImpl(key, first) match {
+		findFirst(key, list) match {
 			case Some(update) => update.value = value
-			case None => first = Node(key, value, Some(first))
+			case None => list = Node(key, value) :: list
 		}
 	}
 	
 	def size(): Int = {
-		???
+		list.size
 	}
 	
 	def keys(): Iterable[Key] = {
-		???
+		for (each <- list) yield each.key
 	}
 	
 	override def delete(key: Key): Unit = {
-		???
+		if (!list.isEmpty) {
+			list = filter(list, Nil){ _.key != key }
+		}
 	}
 	
 
