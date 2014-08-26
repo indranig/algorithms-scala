@@ -17,18 +17,12 @@ package object graphs {
 	object DepthFirstOrder
 	object DepthFirstPaths
 	object DepthFirstSearch
-	object Digraph
 	object DigraphGenerator
 	object DijkstraAllPairsSP
 	object DijkstraSP
 	object DirectedCycle
 	object DirectedDFS
-	object DirectedEdge
-	object Edge
-	object EdgeWeightedDigraph
 	object EdgeWeightedDirectedCycle
-	object EdgeWeightedGraph
-	object Graph
 	object KosarajuSharirSCC
 	object KruskalMST
 	object LazyPrimMST
