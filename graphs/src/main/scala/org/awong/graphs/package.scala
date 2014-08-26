@@ -8,15 +8,12 @@ package object graphs {
 	object Bipartite
 	object BoruvkaMST
 	object BreadthFirstDirectedPaths
-	object BreadthFirstPaths
 	object CC
 	object CPM
 	object Cycle
 	object DegreesOfSeparation
 	object DepthFirstDirectedPaths
 	object DepthFirstOrder
-	object DepthFirstPaths
-	object DepthFirstSearch
 	object DigraphGenerator
 	object DijkstraAllPairsSP
 	object DijkstraSP
@@ -31,4 +28,5 @@ package object graphs {
 	object SymbolGraph
 	object Topological
 	object TransitiveClosure
+	
 }
