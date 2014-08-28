@@ -5,11 +5,11 @@ import collection.mutable.{Map => MMap}
 
 abstract class UndirectedPaths[V](graph: Graph[V], start: V) {
 	
-	var markedMap = init()
-	var edgeTo = MMap[V,V]()
+	protected var markedMap = init()
+	protected var edgeTo = MMap[V,V]()
 	
-	protected def init(): collection.mutable.Map[V, Boolean] = {
-			graph.adjacencyList.keys.foldLeft(collection.mutable.Map[V,Boolean]()){ case (map,key) =>
+	protected def init(): MMap[V, Boolean] = {
+			graph.vertices.foldLeft(MMap[V,Boolean]()){ case (map,key) =>
 			map + (key -> false)
 		}
 	}
@@ -84,3 +84,136 @@ class BreadthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedPaths[V]
 		}
 	}
 }
+
+
+class ConnectedComponents[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+
+	protected var idMap = MMap[V,Int]()
+	var count: Int = 0
+	
+	setUp()
+	
+	private def setUp(): Unit = {
+		graph.vertices.foreach{ vertex =>
+			if (!marked(vertex)) {
+				dfs(graph, vertex)
+				count = count + 1
+			}
+		}
+	}
+	
+	protected def count(vertex: V, count: Int): Unit = {
+		idMap = idMap + (vertex -> count)
+	}
+	
+	def id(vertex: V): Int = {
+		idMap.get(vertex).getOrElse(-1)
+	}
+	
+	private def dfs(graph: Graph[V], vertex: V): Unit = {
+		mark(vertex, true)
+		count(vertex, count)
+		graph.adj(vertex).foreach { w =>
+			if (!marked(w)) {
+				dfs(graph, w)
+			}
+		}
+	}
+
+	def connected(thiz: V, that: V): Boolean = {
+		id(thiz) == id(that)
+	}
+}
+
+/*
+ * detect whether the given graph has a cycle assuming
+ * no self-loops or parallel edges
+ */
+class AcyclicDetection[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+	var hasCycle: Boolean = false
+
+	setUp()
+	
+	private def setUp(): Unit = {
+		graph.vertices.foreach{ s =>
+			if (!marked(s)) {
+				dfs(graph, s, s)
+			}
+		}
+	}
+	private def dfs(graph: Graph[V], v: V, u: V): Unit = {
+		mark(v, true)
+		// change this recursion so that it terminates when hasCycle = true
+		graph.adj(v).foreach { w =>
+			if (!marked(w)) {
+				dfs(graph, w, v)
+			} else if (w != u) {
+				hasCycle = true
+			}
+		}
+	}
+	
+}
+
+/*
+ * Detect whether the given graph is a bipartite, which is just to say
+ * that its vertices can be assigned to one of two colors in such a way that
+ * no edge connects vertices of the same color.
+ */
+class BipartiteDetection[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+	var isTwoColorable: Boolean = true
+	var colorMap = MMap[V, Boolean]()
+	
+	setUp()
+	
+	private def setUp(): Unit = {
+		graph.vertices.foreach{ s =>
+			if (!marked(s)) {
+				dfs(graph, s)
+			}
+		}
+	}
+	
+	
+	protected def color(vertex: V, colored: Boolean): Unit = {
+		colorMap = colorMap + (vertex -> colored)
+	}
+	
+	def color(vertex: V): Boolean = {
+		colorMap.get(vertex).getOrElse(false)
+	}
+	
+	private def dfs(graph: Graph[V], v: V): Unit = {
+		mark(v, true)
+		// change this recursion so that it terminates when isTwoColorable = true
+		graph.adj(v).foreach { w =>
+			if (!marked(w)) {
+				val newColor = !color(v)
+				color(w, newColor)
+				dfs(graph, w)
+			} else if (color(w) == color(v)) {
+				isTwoColorable = false
+			}
+		}
+	}
+	
+	def isBipartite: Boolean = isTwoColorable
+}
+
+
+/**
+ * An implementation needed because the textbook coded originally represented
+ * graph vertices with integers rather than generically. This uses a symbol
+ * table to associated from strings to integers.
+ * 
+ * see p.552
+ */
+object SymbolGraph
+
+/**
+ * Teaser of idea to calculate the Erdos numbers for a graph
+ * 
+ * see p.555
+ */
+object DegreesOfSeparation
+

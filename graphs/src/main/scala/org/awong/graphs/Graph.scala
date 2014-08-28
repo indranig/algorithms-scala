@@ -6,6 +6,8 @@ class Graph[V] {
 	
 	def nVertices: Int = adjacencyList.keySet.size
 	
+	def vertices: Set[V] = adjacencyList.keySet
+	
 	def adj(v: V): Iterable[V] = {
 		adjacencyList.get(v) match {
 			case Some(vs) => vs
