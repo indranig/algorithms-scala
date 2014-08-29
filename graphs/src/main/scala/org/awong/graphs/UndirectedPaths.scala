@@ -17,12 +17,12 @@ abstract class UndirectedPaths[V](graph: Graph[V], start: V) {
 		edgeTo = edgeTo + (w -> v)
 	}
 	
-	protected def mark(vertex: V, mark: Boolean): Unit = {
+	protected def marked(vertex: V, mark: Boolean): Unit = {
 		markedMap = markedMap + (vertex -> mark)
 	}
 	
 	def marked(vertex: V): Boolean = {
-		markedMap.get(vertex).getOrElse(false)
+		markedMap.getOrElse(vertex, false)
 	}
 	
 	def hasPathTo(vertex: V): Boolean = {
@@ -52,7 +52,7 @@ class DepthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedPaths[V](g
 	dfs(graph, start)
 	
 	private def dfs(graph: Graph[V], vertex: V): Unit = {
-		mark(vertex, true)
+		marked(vertex, true)
 		graph.adj(vertex).foreach{ w =>
 			if (!marked(w)) {
 				addEdgeTo(w, vertex)
@@ -70,14 +70,14 @@ class BreadthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedPaths[V]
 		import collection.mutable.Queue
 		
 		var queue = Queue[V]()
-		mark(vertex, true)
+		marked(vertex, true)
 		queue.enqueue(vertex)
 		while (!queue.isEmpty) {
 			val v = queue.dequeue()
 			graph.adj(v).foreach { w =>
 				if (!marked(w)) {
 					addEdgeTo(w,v)
-					mark(w, true)
+					marked(w, true)
 					queue.enqueue(w)
 				}
 			}
@@ -107,11 +107,11 @@ class ConnectedComponents[V](graph: Graph[V], start: V) extends UndirectedPaths[
 	}
 	
 	def id(vertex: V): Int = {
-		idMap.get(vertex).getOrElse(-1)
+		idMap.getOrElse(vertex, -1)
 	}
 	
 	private def dfs(graph: Graph[V], vertex: V): Unit = {
-		mark(vertex, true)
+		marked(vertex, true)
 		count(vertex, count)
 		graph.adj(vertex).foreach { w =>
 			if (!marked(w)) {
@@ -142,7 +142,7 @@ class AcyclicDetection[V](graph: Graph[V], start: V) extends UndirectedPaths[V](
 		}
 	}
 	private def dfs(graph: Graph[V], v: V, u: V): Unit = {
-		mark(v, true)
+		marked(v, true)
 		// change this recursion so that it terminates when hasCycle = true
 		graph.adj(v).foreach { w =>
 			if (!marked(w)) {
@@ -180,11 +180,11 @@ class BipartiteDetection[V](graph: Graph[V], start: V) extends UndirectedPaths[V
 	}
 	
 	def color(vertex: V): Boolean = {
-		colorMap.get(vertex).getOrElse(false)
+		colorMap.getOrElse(vertex, false)
 	}
 	
 	private def dfs(graph: Graph[V], v: V): Unit = {
-		mark(v, true)
+		marked(v, true)
 		// change this recursion so that it terminates when isTwoColorable = true
 		graph.adj(v).foreach { w =>
 			if (!marked(w)) {

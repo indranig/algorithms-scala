@@ -2,27 +2,20 @@ package org.awong
 
 package object graphs {
 	object AcyclicLP
-	object AcyclicSP
-	object Arbitrage
-	object BellmanFordSP
-	object BoruvkaMST
-	object BreadthFirstDirectedPaths
-	object CPM
-	object DepthFirstDirectedPaths
-	object DepthFirstOrder
 	object DigraphGenerator
+	object EdgeWeightedDirectedCycle
+	
+	// Shortest Path
 	object DijkstraAllPairsSP
 	object DijkstraSP
-	object DirectedCycle
-	object DirectedDFS
-	object EdgeWeightedDirectedCycle
-	object KosarajuSharirSCC
+	object AcyclicSP
+	object CriticalPathMethod
+	object BellmanFordSP
+	object Arbitrage
+	
+	// Minimum Spanning Trees
+	object BoruvkaMST
 	object KruskalMST
 	object LazyPrimMST
 	object PrimMST
-	object SymbolDigraph
-	object Topological
-	object TransitiveClosure
-	
-	
 }

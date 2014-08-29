@@ -1,6 +1,7 @@
 package org.awong.graphs
 
 class Digraph[V] extends Graph[V] {
+	override val isDirected = true
 
 	override def addEdge(v: V, w: V): Unit = {
 		add(v, w)
@@ -9,7 +10,7 @@ class Digraph[V] extends Graph[V] {
 	
 	def reverse: Digraph[V] = {
 		val r = new Digraph[V]()
-		for (v <- adjacencyList.keys; w <- adj(v)) r.addEdge(w, v)
+		for (v <- vertices; w <- adj(v)) r.addEdge(w, v)
 		r
 	}
 }

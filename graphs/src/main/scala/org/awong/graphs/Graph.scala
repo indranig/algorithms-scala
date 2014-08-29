@@ -3,8 +3,9 @@ package org.awong.graphs
 class Graph[V] {
 	var adjacencyList = Map[V, Seq[V]]()
 	var nEdges: Int = 0
+	val isDirected = false
 	
-	def nVertices: Int = adjacencyList.keySet.size
+	def nVertices: Int = vertices.size
 	
 	def vertices: Set[V] = adjacencyList.keySet
 	
@@ -15,6 +16,26 @@ class Graph[V] {
 		}
 	}
 	
+	def degree(v: V): Int = {
+		adjacencyList.get(v).getOrElse(Seq[V]()).size
+	}
+	
+	def maxDegree(v: V): Int = {
+		vertices.map(v => degree(v)).max
+	}
+	def nSelfLoops(v: V): Int = {
+		val selfLoops = for (w <- adj(v) if w == v) yield w
+		selfLoops.size
+	}
+	def nSelfLoops(): Int = {
+		val allSelfLoops = for (v <- vertices) yield nSelfLoops(v)
+		val sum = allSelfLoops.sum
+		if (isDirected) {
+			sum
+		} else {
+			sum / 2
+		}
+	}
 	protected def add(node: V, other: V): Unit = {
 		adjacencyList = adjacencyList.get(node) match {
 			case Some(nodes) => adjacencyList + (node -> (other +: nodes))
