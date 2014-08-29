@@ -1,20 +1,19 @@
-package org.awong.graphs
+package org.awong.graphs.undirected
+
+import org.awong.graphs.Graph
 
 import collection.mutable.{Map => MMap}
+import collection.mutable.Queue
 
 
 abstract class UndirectedPaths[V](graph: Graph[V], start: V) {
 	
-	protected var markedMap = init()
-	protected var edgeTo = MMap[V,V]()
+	protected var markedMap = initMarkedMap()
 	
-	protected def init(): MMap[V, Boolean] = {
+	protected def initMarkedMap(): MMap[V, Boolean] = {
 			graph.vertices.foldLeft(MMap[V,Boolean]()){ case (map,key) =>
 			map + (key -> false)
 		}
-	}
-	protected def addEdgeTo(w: V, v: V): Unit = {
-		edgeTo = edgeTo + (w -> v)
 	}
 	
 	protected def marked(vertex: V, mark: Boolean): Unit = {
@@ -27,6 +26,15 @@ abstract class UndirectedPaths[V](graph: Graph[V], start: V) {
 	
 	def hasPathTo(vertex: V): Boolean = {
 		marked(vertex)
+	}
+}
+
+
+abstract class UndirectedEdges[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+	protected var edgeTo = MMap[V,V]()
+
+	protected def addEdgeTo(w: V, v: V): Unit = {
+		edgeTo = edgeTo + (w -> v)
 	}
 	
 	def pathTo(v: V): Iterable[V] = {
@@ -47,7 +55,28 @@ abstract class UndirectedPaths[V](graph: Graph[V], start: V) {
 	}
 }
 
-class DepthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+/**
+ * simple dfs that marks vertices
+ */
+class DepthFirstSearch[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+	
+	var count: Int = 0
+	
+	dfs(graph, start)
+	
+	def dfs(graph: Graph[V], vertex: V): Unit = {
+		marked(vertex, true)
+		count = count + 1
+		graph.adj(start).foreach{ w =>
+			if (!marked(w)) {
+				dfs(graph, w)
+			}
+		}
+	}
+	
+}
+
+class DepthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedEdges[V](graph, start) {
 	
 	dfs(graph, start)
 	
@@ -62,12 +91,11 @@ class DepthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedPaths[V](g
 	}
 }
 
-class BreadthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+class BreadthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedEdges[V](graph, start) {
 	
 	bfs(graph, start)
 	
 	private def bfs(graph: Graph[V], vertex: V): Unit = {
-		import collection.mutable.Queue
 		
 		var queue = Queue[V]()
 		marked(vertex, true)
@@ -86,7 +114,7 @@ class BreadthFirstPaths[V](graph: Graph[V], start: V) extends UndirectedPaths[V]
 }
 
 
-class ConnectedComponents[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+class ConnectedComponents[V](graph: Graph[V], start: V) extends UndirectedEdges[V](graph, start) {
 
 	protected var idMap = MMap[V,Int]()
 	var count: Int = 0
@@ -129,7 +157,7 @@ class ConnectedComponents[V](graph: Graph[V], start: V) extends UndirectedPaths[
  * detect whether the given graph has a cycle assuming
  * no self-loops or parallel edges
  */
-class AcyclicDetection[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+class AcyclicDetection[V](graph: Graph[V], start: V) extends UndirectedEdges[V](graph, start) {
 	var hasCycle: Boolean = false
 
 	setUp()
@@ -160,7 +188,7 @@ class AcyclicDetection[V](graph: Graph[V], start: V) extends UndirectedPaths[V](
  * that its vertices can be assigned to one of two colors in such a way that
  * no edge connects vertices of the same color.
  */
-class BipartiteDetection[V](graph: Graph[V], start: V) extends UndirectedPaths[V](graph, start) {
+class BipartiteDetection[V](graph: Graph[V], start: V) extends UndirectedEdges[V](graph, start) {
 	var isTwoColorable: Boolean = true
 	var colorMap = MMap[V, Boolean]()
 	

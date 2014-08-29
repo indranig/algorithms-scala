@@ -1,21 +1,20 @@
-package org.awong.graphs
+package org.awong.graphs.directed
+
+import org.awong.graphs.Digraph
+import org.awong.graphs.Graph
 
 import collection.mutable.{Map => MMap}
+import collection.mutable.{DoubleLinkedList, Queue, Stack}
 
 abstract class DirectedPaths[V](graph: Digraph[V], start: V) {
 	
-	protected var markedMap = init()
-	protected var edgeTo = MMap[V,V]()
+	protected var markedMap = initMarkedMap()
 	
-	protected def init(): MMap[V, Boolean] = {
+	protected def initMarkedMap(): MMap[V, Boolean] = {
 			graph.vertices.foldLeft(MMap[V,Boolean]()){ case (map,key) =>
 			map + (key -> false)
 		}
 	}
-	protected def addEdgeTo(w: V, v: V): Unit = {
-		edgeTo = edgeTo + (w -> v)
-	}
-	
 	protected def marked(vertex: V, mark: Boolean): Unit = {
 		markedMap = markedMap + (vertex -> mark)
 	}
@@ -26,6 +25,14 @@ abstract class DirectedPaths[V](graph: Digraph[V], start: V) {
 	
 	def hasPathTo(vertex: V): Boolean = {
 		marked(vertex)
+	}
+}
+
+abstract class DirectedEdges[V](graph: Digraph[V], start: V) extends DirectedPaths[V](graph, start) {
+	protected var edgeTo = MMap[V,V]()
+	
+	protected def addEdgeTo(w: V, v: V): Unit = {
+		edgeTo = edgeTo + (w -> v)
 	}
 	
 	def pathTo(v: V): Iterable[V] = {
@@ -46,11 +53,9 @@ abstract class DirectedPaths[V](graph: Digraph[V], start: V) {
 	}
 }
 
+
 // Same code as DepthFirstOrder
 class DirectedDFS[V](graph: Digraph[V], start: V) extends DirectedPaths[V](graph, start) {
-	
-	import collection.immutable.Queue
-	import collection.mutable.DoubleLinkedList
 	
 	private var preOrder = Queue[V]()
 	private var postOrder = Queue[V]()
@@ -88,7 +93,7 @@ class DirectedDFS[V](graph: Digraph[V], start: V) extends DirectedPaths[V](graph
 }
 
 
-class DepthFirstDirectedPaths[V](graph: Digraph[V], start: V) extends DirectedPaths[V](graph, start) {
+class DepthFirstDirectedPaths[V](graph: Digraph[V], start: V) extends DirectedEdges[V](graph, start) {
 	dfs(graph, start)
 	
 	private def dfs(graph: Digraph[V], vertex: V): Unit = {
@@ -102,11 +107,10 @@ class DepthFirstDirectedPaths[V](graph: Digraph[V], start: V) extends DirectedPa
 	}
 }
 
-class BreadthFirstDirectedPaths[V](graph: Digraph[V], start: V) extends DirectedPaths[V](graph, start) {
+class BreadthFirstDirectedPaths[V](graph: Digraph[V], start: V) extends DirectedEdges[V](graph, start) {
 	bfs(graph, start)
 	
 	private def bfs(graph: Graph[V], vertex: V): Unit = {
-		import collection.mutable.Queue
 		
 		var queue = Queue[V]()
 		marked(vertex, true)
@@ -124,8 +128,7 @@ class BreadthFirstDirectedPaths[V](graph: Digraph[V], start: V) extends Directed
 	}
 }
 
-class DirectedCycle[V](graph: Digraph[V], start: V) extends DirectedPaths[V](graph, start) {
-	import collection.mutable.Stack
+class DirectedCycle[V](graph: Digraph[V], start: V) extends DirectedEdges[V](graph, start) {
 	
 	var maybeCycle: Option[Stack[V]] = None
 	var onStackMap = MMap[V, Boolean]()
@@ -249,8 +252,6 @@ class TransitiveClosure[V](graph: Digraph[V], start: V) extends DirectedPaths[V]
 			allMap = allMap + (v -> new DirectedDFS(graph, v))
 		}
 	}
-	
-	
 	
 	def reachable(v: V, w: V): Boolean = {
 		val dfs = allMap.getOrElse(v, new DirectedDFS(graph, v))
