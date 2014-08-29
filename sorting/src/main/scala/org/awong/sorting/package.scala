@@ -10,12 +10,7 @@ package object sorting {
 		a
 	}
 	
-	object IndexMaxPQ
-	object IndexMinPQ
-	object MaxPQ
 	object MergeBU
-	object MinPQ
-	object Multiway
 	object Quick3way
-	object TopM
+	
 }
