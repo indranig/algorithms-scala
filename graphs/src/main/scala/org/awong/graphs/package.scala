@@ -1,7 +1,9 @@
 package org.awong
 
 package object graphs {
-	object DigraphGenerator
 	
-	
+	trait EdgeLike[V] {
+		def v: V
+		def w: V
+	}
 }

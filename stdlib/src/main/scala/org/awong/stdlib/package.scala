@@ -83,10 +83,6 @@ package object stdlib {
 	
 	}
 	
-	object StdRandom {
-	
-	}
-	
 	object StdStats {
 	
 	}

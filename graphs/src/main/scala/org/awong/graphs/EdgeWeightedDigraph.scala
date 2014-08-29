@@ -2,36 +2,41 @@ package org.awong.graphs
 
 class EdgeWeightedDigraph[V] {
 	var nEdges: Int = 0
-	var adjacencyList = Map[V, Seq[DirectedEdge[V]]]()
+	var adjacencyList = Map[V, Seq[WeightedDiEdge[V]]]()
 	
 	def nVertices: Int = adjacencyList.keySet.size
 	
-	def adj(v: V): Iterable[DirectedEdge[V]] = {
+	def adj(v: V): Iterable[WeightedDiEdge[V]] = {
 		adjacencyList.get(v) match {
 			case Some(edges) => edges
-			case None => Seq[DirectedEdge[V]]()
+			case None => Seq[WeightedDiEdge[V]]()
 		}
 	}
 	
-	def edges: Iterable[DirectedEdge[V]] = {
+	def edges: Iterable[WeightedDiEdge[V]] = {
 		for (vertex <- adjacencyList.keys; edge <- adj(vertex)) yield edge
 	}
 	
-	protected def add(node: V, edge: DirectedEdge[V]): Unit = {
+	protected def add(node: V, edge: WeightedDiEdge[V]): Unit = {
 		adjacencyList = adjacencyList.get(node) match {
 			case Some(edges) => adjacencyList + (node -> (edge +: edges))
-			case None => adjacencyList + (node -> Seq[DirectedEdge[V]](edge))
+			case None => adjacencyList + (node -> Seq[WeightedDiEdge[V]](edge))
 		}
 	}
+	def add(v: V, w: V, weight: Double): Unit = add(WeightedDiEdge(v,w,weight))
 	
-	def addEdge(edge: DirectedEdge[V]): Unit = {
+	def +(edge: WeightedDiEdge[V]): Unit = add(edge)
+	
+	def add(edge: WeightedDiEdge[V]): Unit = {
 		val v = edge.from
 		add(v, edge)
 		nEdges = nEdges + 1
 	}
+	
+	
 }
 
-case class DirectedEdge[V](v: V, w: V, weight: Double) {
+case class WeightedDiEdge[V](v: V, w: V, weight: Double) extends EdgeLike[V] {
 	def from: V = v
 	def to: V = w
 	

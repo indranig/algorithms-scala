@@ -48,8 +48,19 @@ class Graph[V] {
 		add(w, v)
 		nEdges = nEdges + 1
 	}
+	
+	def +(edge: SymmetricEdge[V]): Unit = {
+		add(edge.v, edge.w)
+	}
 }
 
 object Graph {
-	def apply[V]: Graph[V] = new Graph[V]()
+	def apply[V](): Graph[V] = new Graph[V]()
+}
+
+case class SymmetricEdge[V](v: V, w: V) extends EdgeLike[V]
+{
+	override def toString(): String = {
+		"%d - %d".format(v, w)
+	}
 }
