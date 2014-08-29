@@ -6,4 +6,8 @@ package object graphs {
 		def v: V
 		def w: V
 	}
+	
+	trait WeightedEdgeLike[V] extends EdgeLike[V] {
+		def weight: Double
+	}
 }

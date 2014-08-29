@@ -2,9 +2,14 @@ package org.awong.graphs
 
 class EdgeWeightedDigraph[V] {
 	var nEdges: Int = 0
+	val isDirected = true
+
 	var adjacencyList = Map[V, Seq[WeightedDiEdge[V]]]()
 	
-	def nVertices: Int = adjacencyList.keySet.size
+	def nVertices: Int = vertices.size
+	
+	def vertices: Iterable[V] = adjacencyList.keySet
+	
 	
 	def adj(v: V): Iterable[WeightedDiEdge[V]] = {
 		adjacencyList.get(v) match {
@@ -14,7 +19,7 @@ class EdgeWeightedDigraph[V] {
 	}
 	
 	def edges: Iterable[WeightedDiEdge[V]] = {
-		for (vertex <- adjacencyList.keys; edge <- adj(vertex)) yield edge
+		for (vertex <- vertices; edge <- adj(vertex)) yield edge
 	}
 	
 	protected def add(node: V, edge: WeightedDiEdge[V]): Unit = {
@@ -36,7 +41,7 @@ class EdgeWeightedDigraph[V] {
 	
 }
 
-case class WeightedDiEdge[V](v: V, w: V, weight: Double) extends EdgeLike[V] {
+case class WeightedDiEdge[V](v: V, w: V, weight: Double) extends WeightedEdgeLike[V] {
 	def from: V = v
 	def to: V = w
 	

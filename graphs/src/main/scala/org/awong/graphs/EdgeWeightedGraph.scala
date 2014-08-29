@@ -1,8 +1,9 @@
 package org.awong.graphs
 
 class EdgeWeightedGraph[V] {
-
 	var nEdges: Int = 0
+	val isDirected = false
+
 	var adjacencyList = Map[V, Seq[WeightedEdge[V]]]()
 	
 	def nVertices: Int = vertices.size
@@ -41,7 +42,8 @@ class EdgeWeightedGraph[V] {
 		nEdges = nEdges + 1
 	}
 }
-case class WeightedEdge[V](v: V, w: V, weight: Double) extends Comparable[WeightedEdge[V]] with EdgeLike[V]
+
+case class WeightedEdge[V](v: V, w: V, weight: Double) extends Comparable[WeightedEdge[V]] with WeightedEdgeLike[V]
 {
 	def either: V = v
 	def other(vertex: V) = {
@@ -54,9 +56,10 @@ case class WeightedEdge[V](v: V, w: V, weight: Double) extends Comparable[Weight
 	override def toString(): String = {
 		"%d - %d %.2f".format(v, w, weight)
 	}
+	// rank weighted edges from smallest weight to biggest weight
 	def compareTo(that: WeightedEdge[V]): Int = {
-		if (this.weight < that.weight) -1
-		else if (this.weight > that.weight) 1
+		if (this.weight < that.weight) +1
+		else if (this.weight > that.weight) -1
 		else 0
 	}
 }
