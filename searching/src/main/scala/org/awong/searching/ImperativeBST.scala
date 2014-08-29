@@ -2,8 +2,6 @@ package org.awong.searching
 
 import java.util.NoSuchElementException
 
-
-
 class ImperativeBST[Key <: Ordered[Key], Value] extends OrderedSymbolTable[Key,Value] {
 
 	var root: Node = Leaf
@@ -19,11 +17,20 @@ class ImperativeBST[Key <: Ordered[Key], Value] extends OrderedSymbolTable[Key,V
 	}
 	case class Branch(var key: Key,
 				var value: Value,
-				var left:Node = Leaf,
+				var left: Node = Leaf,
 				var right: Node = Leaf)
-				extends Node {
+				extends Node
+	{
+		validate()
+		
 		def size: Int = left.size + right.size + 1
 		val isEmpty = false
+
+		private def validate(): Unit = {
+			require(key != null && value != null)
+			require(!left.isEmpty && key > left.key)
+			require(!right.isEmpty && key < right.key)
+		}
 	}
 	case object Leaf extends Node {
 		def key: Key = fail("Empty tree")
@@ -246,7 +253,6 @@ class ImperativeBST[Key <: Ordered[Key], Value] extends OrderedSymbolTable[Key,V
 				case Branch(k,_,left,right) if k > lo => loop(left, queue, lo, hi)
 				case Branch(k,_,left,right) if k < hi => loop(right, queue, lo, hi)
 				case Branch(k,v,left,right) if (k >= lo && k <= hi) => {
-					// this only enqueues 1 key, what happens if there are many nodes in between lo and hi?
 					queue.enqueue(k)
 				}
 			}
