@@ -1,5 +1,8 @@
 package org.awong.sorting.pq
 
+/**
+ * For example of purely functional PQ, see  http://amitdev.github.io/coding/2014/03/06/Priority-Queue/
+ */
 trait PriorityQueue[K <: Comparable[K]] {
 	def insert(v: K): Unit
 	def enqueue(v: K): Unit
@@ -31,6 +34,7 @@ class MaxPQ[K <: Comparable[K]] extends PriorityQueue[K] {
 		???
 	}
 }
+
 class MinPQ[K <% Comparable[K]] {
 	// insert a key into the PQ
 	def insert(v: K): Unit = {
@@ -65,44 +69,28 @@ trait IndexPriorityQueue[K <: Comparable[K]] {
 	def keyOf(i: Int): K
 }
 
-class IndexMaxPQ[K <: Comparable[K]] extends IndexPriorityQueue[K] {
-	def insert(i: Int, key: K): Unit = {
-		???
-	}
-	def changeKey(k: Int, key: K): Unit = {
-		???
-	}
-	def contains(i: Int): Boolean = {
-		???
-	}
-	def delete(i: Int): Unit = {
-		???
-	}
-	def isEmpty: Boolean = {
-		???
-	}
-	def size: Int = {
-		???
-	}
-	def keyOf(i: Int): K = {
-		???
-	}
+trait MaxPQLike[K <: Comparable[K]] {
 	/** 
 	 * return the maximum key
 	 */
-	def maxKey: K
+	def maxKey: K = {
+		???
+	}
 	/** 
 	 * return the maximum key's index
 	 */
-	def maxIndex: Int
+	def maxIndex: Int = {
+		???
+	}
 	/** 
 	 * remove the maximum key and return its index
 	 */
-	def delMax(): Int
-
+	def delMax(): Int = {
+		???
+	}
 }
 
-class IndexMinPQ[K <: Comparable[K]] extends IndexPriorityQueue[K]  {
+class IndexMaxPQ[K <: Comparable[K]] extends IndexPriorityQueue[K] with MaxPQLike[K] {
 	def insert(i: Int, key: K): Unit = {
 		???
 	}
@@ -124,17 +112,50 @@ class IndexMinPQ[K <: Comparable[K]] extends IndexPriorityQueue[K]  {
 	def keyOf(i: Int): K = {
 		???
 	}
+}
+
+trait MinPQLike[K <: Comparable[K]] {
 	/** 
 	 * return the minimum key
 	 */
-	def minKey: K
+	def minKey: K = {
+		???
+	}
 	/** 
 	 * return the minimum key's index
 	 */
-	def minIndex: Int
+	def minIndex: Int = {
+		???
+	}
 	/** 
 	 * remove the minimum key and return its index
 	 */
-	def delMin(): Int
+	def delMin(): Int = {
+		???
+	}
+}
+
+class IndexMinPQ[K <: Comparable[K]] extends IndexPriorityQueue[K] with MinPQLike[K] {
+	def insert(i: Int, key: K): Unit = {
+		???
+	}
+	def changeKey(k: Int, key: K): Unit = {
+		???
+	}
+	def contains(i: Int): Boolean = {
+		???
+	}
+	def delete(i: Int): Unit = {
+		???
+	}
+	def isEmpty: Boolean = {
+		???
+	}
+	def size: Int = {
+		???
+	}
+	def keyOf(i: Int): K = {
+		???
+	}
 }
 
