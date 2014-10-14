@@ -43,7 +43,7 @@ class EdgeWeightedGraph[V] {
 	}
 }
 
-case class WeightedEdge[V](v: V, w: V, weight: Double) extends Comparable[WeightedEdge[V]] with WeightedEdgeLike[V]
+case class WeightedEdge[V](v: V, w: V, weight: Double) extends Ordered[WeightedEdge[V]] with WeightedEdgeLike[V]
 {
 	def either: V = v
 	def other(vertex: V) = {
@@ -57,10 +57,14 @@ case class WeightedEdge[V](v: V, w: V, weight: Double) extends Comparable[Weight
 		"%d - %d %.2f".format(v, w, weight)
 	}
 	// rank weighted edges from smallest weight to biggest weight
-	def compareTo(that: WeightedEdge[V]): Int = {
+	override def compareTo(that: WeightedEdge[V]): Int = {
 		if (this.weight < that.weight) +1
 		else if (this.weight > that.weight) -1
 		else 0
+	}
+	
+	override def compare(that: WeightedEdge[V]): Int = {
+		compareTo(that)
 	}
 }
 

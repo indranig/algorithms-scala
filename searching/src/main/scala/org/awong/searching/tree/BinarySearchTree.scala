@@ -22,9 +22,9 @@ import scala.collection.immutable.Queue
 abstract sealed class BinarySearchTree[+A <% Ordered[A]] extends Tree[A] {
 	type BST[A] = BinarySearchTree[A]
 
-	def left: BST[A]
+	def left: BinarySearchTree[A]
 
-	def right: BST[A]
+	def right: BinarySearchTree[A]
 
 
 	/**

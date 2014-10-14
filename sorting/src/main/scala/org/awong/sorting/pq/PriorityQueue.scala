@@ -3,7 +3,7 @@ package org.awong.sorting.pq
 /**
  * For example of purely functional PQ, see  http://amitdev.github.io/coding/2014/03/06/Priority-Queue/
  */
-trait PriorityQueue[K <: Comparable[K]] {
+trait PriorityQueue[K <: Ordered[K]] {
 	def insert(v: K): Unit
 	def enqueue(v: K): Unit
 	def dequeue(): K
@@ -11,7 +11,7 @@ trait PriorityQueue[K <: Comparable[K]] {
 	def size: Int
 }
 
-class MaxPQ[K <: Comparable[K]] extends PriorityQueue[K] {
+class MaxPQ[K <: Ordered[K]] extends PriorityQueue[K] {
 	// insert a key into the PQ
 	def insert(v: K): Unit = {
 		???
@@ -35,7 +35,7 @@ class MaxPQ[K <: Comparable[K]] extends PriorityQueue[K] {
 	}
 }
 
-class MinPQ[K <% Comparable[K]] {
+class MinPQ[K <: Ordered[K]] {
 	// insert a key into the PQ
 	def insert(v: K): Unit = {
 		???
@@ -59,7 +59,7 @@ class MinPQ[K <% Comparable[K]] {
 	}
 }
 
-trait IndexPriorityQueue[K <: Comparable[K]] {
+trait IndexPriorityQueue[K <: Ordered[K]] {
 	def insert(i: Int, key: K): Unit
 	def changeKey(k: Int, key: K): Unit
 	def contains(i: Int): Boolean
@@ -69,7 +69,7 @@ trait IndexPriorityQueue[K <: Comparable[K]] {
 	def keyOf(i: Int): K
 }
 
-trait MaxPQLike[K <: Comparable[K]] {
+trait MaxPQLike[K <: Ordered[K]] {
 	/** 
 	 * return the maximum key
 	 */
@@ -90,7 +90,7 @@ trait MaxPQLike[K <: Comparable[K]] {
 	}
 }
 
-class IndexMaxPQ[K <: Comparable[K]] extends IndexPriorityQueue[K] with MaxPQLike[K] {
+class IndexMaxPQ[K <: Ordered[K]] extends IndexPriorityQueue[K] with MaxPQLike[K] {
 	def insert(i: Int, key: K): Unit = {
 		???
 	}
@@ -114,7 +114,7 @@ class IndexMaxPQ[K <: Comparable[K]] extends IndexPriorityQueue[K] with MaxPQLik
 	}
 }
 
-trait MinPQLike[K <: Comparable[K]] {
+trait MinPQLike[K <: Ordered[K]] {
 	/** 
 	 * return the minimum key
 	 */
@@ -135,7 +135,7 @@ trait MinPQLike[K <: Comparable[K]] {
 	}
 }
 
-class IndexMinPQ[K <: Comparable[K]] extends IndexPriorityQueue[K] with MinPQLike[K] {
+class IndexMinPQ[K <: Ordered[K]] extends IndexPriorityQueue[K] with MinPQLike[K] {
 	def insert(i: Int, key: K): Unit = {
 		???
 	}
