@@ -1,6 +1,8 @@
 package org.awong.sorting.pq
 
-trait IndexPriorityQueue[K <: Ordered[K]] {
+abstract class IndexPriorityQueue[K](implicit val ord: Ordering[K]) {
+	import ord._
+	
 	def insert(i: Int, key: K): Unit
 	def changeKey(k: Int, key: K): Unit
 	def contains(i: Int): Boolean
@@ -31,6 +33,9 @@ trait IndexedMaxPQ[K <: Ordered[K]] {
 	}
 }
 
+/**
+ * @see http://algs4.cs.princeton.edu/24pq/MinPQ.java.html
+ */
 class IndexMaxPQ[K <: Ordered[K]] extends IndexPriorityQueue[K] with IndexedMaxPQ[K] {
 	def insert(i: Int, key: K): Unit = {
 		???
@@ -76,6 +81,9 @@ trait IndexedMinPQ[K <: Ordered[K]] {
 	}
 }
 
+/**
+ * @see http://algs4.cs.princeton.edu/24pq/IndexMinPQ.java.html
+ */
 class IndexMinPQ[K <: Ordered[K]] extends IndexPriorityQueue[K] with IndexedMinPQ[K] {
 	def insert(i: Int, key: K): Unit = {
 		???
