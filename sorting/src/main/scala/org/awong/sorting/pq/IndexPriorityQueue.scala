@@ -34,7 +34,7 @@ trait IndexedMaxPQ[K <: Ordered[K]] {
 }
 
 /**
- * @see http://algs4.cs.princeton.edu/24pq/MinPQ.java.html
+ * @see http://algs4.cs.princeton.edu/24pq/IndexMinPQ.java.html
  */
 class IndexMaxPQ[K <: Ordered[K]] extends IndexPriorityQueue[K] with IndexedMaxPQ[K] {
 	def insert(i: Int, key: K): Unit = {

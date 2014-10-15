@@ -1,7 +1,6 @@
 package org.awong.sorting.pq
 
 import java.util.NoSuchElementException
-
 /**
  * For example of purely functional PQ, see  http://amitdev.github.io/coding/2014/03/06/Priority-Queue/
  */
@@ -10,9 +9,12 @@ abstract class PriorityQueue[K](implicit val ord: Ordering[K]) {
 	
 	import collection.mutable.ArrayBuffer
 	
+	// heap-ordered complete binary tree in pq[1..N] with pq[0] unused
 	var pq = ArrayBuffer[K]()
+	var n: Int = 0
 
 	def insert(v: K): Unit = {
+		n = n + 1
 		pq = pq :+ v
 		swim(size)
 	}
@@ -21,12 +23,14 @@ abstract class PriorityQueue[K](implicit val ord: Ordering[K]) {
 	def dequeue(): K
 	
 	def isEmpty: Boolean = {
-		pq.isEmpty
+		n == 0
 	}
 	def size: Int = {
-		pq.size
+		n
 	}
-	
+	/**
+	 * AKA a bottom-up reheapify
+	 */
 	protected def swim(in: Int): Unit = {
 		var k = in
 		while (k > 1 && cmp(k/2, k)) {
@@ -35,15 +39,19 @@ abstract class PriorityQueue[K](implicit val ord: Ordering[K]) {
 		}
 	}
 	
+	/**
+	 * AKA a top-down reheapify
+	 */
 	protected def sink(in: Int): Unit  = {
 		var k = in
-		while (2*k <= size) {
+		var isDone = false
+		while (2*k <= size && !isDone) {
 			var j = 2*k
 			if (j < size && cmp(j, j+1)) {
 				j = j + 1
 			}
 			if (!cmp(k,j)) {
-				k = size
+				isDone = true
 			} else {
 				exch(k,j)
 				k = j
@@ -83,20 +91,18 @@ class MaxPQ[K <: Ordered[K]] extends PriorityQueue[K] {
 		if (isEmpty) {
 			throw new NoSuchElementException("PQ underflow")
 		}
-		pq.head
+		pq(1)
 	}
 	// return and remove the largest key
 	def delMax(): K = {
 		if (isEmpty) {
 			throw new NoSuchElementException("PQ underflow")
 		}
-		var n = size
 		val maxKey = max
 		n = n - 1
 		exch(1, n)
 		sink(1)
-		// to avoid loitering and aid GC
-		pq.remove(n + 1)
+		pq.remove(n + 1) // to avoid loitering and aid GC
 		maxKey
 	}
 	def dequeue(): K = delMax()
@@ -114,9 +120,6 @@ class MaxPQ[K <: Ordered[K]] extends PriorityQueue[K] {
 	}
 }
 
-object MaxPQ {
-
-}
 
 /**
  * @see http://algs4.cs.princeton.edu/24pq/MinPQ.java.html
@@ -139,13 +142,11 @@ class MinPQ[K <: Ordered[K]] extends PriorityQueue[K] {
 		if (isEmpty) {
 			throw new NoSuchElementException("PQ underflow")
 		}
-		var n = size
 		exch(1,n)
-		n = n - 1
 		val minKey = pq(n)
+		n = n - 1
 		sink(1)
-		// to avoid loitering and aid GC
-		pq.remove(n + 1)
+		pq.remove(n + 1) // to avoid loitering and aid GC
 		minKey
 	}
 	def dequeue(): K = delMin()
